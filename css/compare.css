@@ -1,0 +1,51 @@
+.compare-table-wrap{overflow-x:auto; padding-bottom:8px;}
+.compare-table{width:100%; border-collapse:collapse; min-width:640px;}
+.compare-table th, .compare-table td{
+  padding:var(--sp-3);
+  border-bottom:1px solid var(--border-soft);
+  text-align:left;
+  vertical-align:top;
+}
+.compare-table td:first-child, .compare-table th:first-child{
+  font-family:var(--font-mono);
+  font-size:11px; text-transform:uppercase; letter-spacing:0.06em;
+  color:var(--text-faint);
+  width:160px;
+  white-space:nowrap;
+}
+.compare-col-head{min-width:200px;}
+.compare-product-card{position:relative;}
+.compare-remove{
+  position:absolute; top:0; right:0;
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:6px;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--text-faint); font-size:14px; line-height:1;
+}
+.compare-remove:hover{color:var(--danger); border-color:var(--danger);}
+.compare-col-img{
+  width:100%; aspect-ratio:4/3; object-fit:cover;
+  border-radius:8px; border:1px solid var(--border);
+  margin-bottom:10px; background:var(--bg-elevated);
+}
+.compare-col-name{font-family:var(--font-display); font-weight:600; font-size:var(--fs-base); margin-bottom:6px; line-height:1.3;}
+.compare-col-price{font-size:var(--fs-lg); display:block; margin-bottom:8px;}
+.compare-table td .cell-best{color:var(--price); font-weight:700;}
+
+.compare-empty{
+  text-align:center; padding:var(--sp-7) var(--sp-4);
+  border:1px dashed var(--border); border-radius:var(--radius-lg);
+  color:var(--text-dim);
+}
+.compare-empty h3{color:var(--text); font-size:var(--fs-lg); margin-bottom:8px;}
+
+.compare-picker{margin-top:var(--sp-7); padding-top:var(--sp-6); border-top:1px solid var(--border-soft);}
+.compare-picker-head{
+  font-family:var(--font-mono); font-size:11px; text-transform:uppercase;
+  letter-spacing:0.08em; color:var(--text-faint); margin-bottom:var(--sp-4);
+}
+
+@media (max-width: 700px){
+  .compare-table td:first-child, .compare-table th:first-child{width:110px;}
+}

@@ -1,0 +1,143 @@
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:var(--sp-6) 0 var(--sp-6);
+  border-bottom:1px solid var(--border-soft);
+}
+.hero-grid-lines{
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(79,227,193,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,227,193,0.05) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 70% 60% at 30% 20%, black 10%, transparent 75%);
+  pointer-events:none;
+}
+.hero-glow{
+  position:absolute;
+  top:-180px; right:-120px;
+  width:520px; height:520px;
+  background:radial-gradient(circle, rgba(79,227,193,0.18), transparent 70%);
+  filter:blur(10px);
+  pointer-events:none;
+}
+
+/* ---- banner (signature element) ---- */
+.hero-banner{
+  position:relative;
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  background:var(--bg-elevated);
+  box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
+}
+.hero-banner-track{
+  display:flex;
+  transition:transform .5s var(--ease);
+}
+.hero-slide{
+  position:relative;
+  flex:0 0 100%;
+  height:420px;
+  overflow:hidden;
+}
+.hero-slide img{
+  width:100%; height:100%; object-fit:cover;
+}
+.hero-slide-scrim{
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(10,12,17,0.95) 0%, rgba(10,12,17,0.75) 32%, rgba(10,12,17,0.15) 65%, transparent 100%);
+}
+.hero-slide-content{
+  position:absolute; left:0; bottom:0; top:0;
+  display:flex; flex-direction:column; justify-content:center;
+  gap:10px;
+  padding:0 var(--sp-6);
+  max-width:520px;
+}
+.hero-slide-brand{
+  font-family:var(--font-mono);
+  font-size:var(--fs-xs);
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--accent);
+}
+.hero-slide-content h2{
+  font-size:var(--fs-2xl);
+  color:var(--text);
+}
+.hero-slide-specs{
+  display:flex; flex-wrap:wrap; gap:6px 14px;
+  font-family:var(--font-mono);
+  font-size:var(--fs-sm);
+  color:var(--text-dim);
+}
+.hero-slide-specs span::before{content:'· '; color:var(--text-faint);}
+.hero-slide-specs span:first-child::before{content:'';}
+.hero-slide-footer{
+  display:flex; align-items:center; gap:16px;
+  margin-top:6px;
+}
+.hero-slide-price{font-size:var(--fs-xl);}
+
+.hero-banner-arrow{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:40px; height:40px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%;
+  background:rgba(10,12,17,0.55);
+  border:1px solid var(--border);
+  color:var(--text);
+  backdrop-filter:blur(4px);
+  transition:all .15s;
+  z-index:2;
+}
+.hero-banner-arrow:hover{border-color:var(--accent); color:var(--accent);}
+.hero-banner-arrow.prev{left:16px;}
+.hero-banner-arrow.next{right:16px;}
+
+.hero-banner-dots{
+  position:absolute; bottom:16px; right:24px;
+  display:flex; gap:7px; z-index:2;
+}
+.hero-banner-dots button{
+  width:8px; height:8px; border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  border:none; padding:0;
+  transition:all .2s;
+}
+.hero-banner-dots button.active{
+  background:var(--accent);
+  width:20px; border-radius:4px;
+}
+
+.category-strip{
+  display:flex; gap:10px; overflow-x:auto;
+  padding:var(--sp-4) 0;
+  border-bottom:1px solid var(--border-soft);
+  scrollbar-width:none;
+}
+.category-strip::-webkit-scrollbar{display:none;}
+.category-chip{
+  flex-shrink:0;
+  padding:9px 16px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  font-size:var(--fs-xs);
+  font-weight:600;
+  color:var(--text-dim);
+  transition:all .15s;
+}
+.category-chip:hover{color:var(--text); border-color:var(--text-dim);}
+.category-chip.active{background:var(--accent); border-color:var(--accent); color:#04150F;}
+
+@media (max-width: 900px){
+  .hero-slide{height:480px;}
+  .hero-slide-content{max-width:100%; padding:0 var(--sp-4);}
+  .hero-slide-content h2{font-size:var(--fs-xl);}
+  .hero-slide-scrim{background:linear-gradient(180deg, rgba(10,12,17,0.2) 0%, rgba(10,12,17,0.95) 75%);}
+}
+@media (max-width: 500px){
+  .hero-slide{height:440px;}
+  .hero-banner-arrow{width:34px; height:34px;}
+}

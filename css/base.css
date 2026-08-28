@@ -138,6 +138,8 @@ body{
 .badge-used{background:rgba(242,184,75,0.12); color:var(--amber); border-color:rgba(242,184,75,0.3);}
 .badge-sale{background:rgba(242,104,92,0.12); color:var(--danger); border-color:rgba(242,104,92,0.3);}
 .badge-out{background:rgba(91,98,114,0.15); color:var(--text-faint); border-color:var(--border);}
+.badge-warranty{background:rgba(79,227,193,0.08); color:var(--text-dim); border-color:var(--border);}
+.badge-warranty svg{width:11px; height:11px; flex-shrink:0;}
 
 /* ---- price ---- */
 .price{
@@ -178,4 +180,24 @@ body{
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
   html{scroll-behavior:auto;}
+}
+
+/* ---- floating whatsapp button (every page) ---- */
+.whatsapp-float{
+  position:fixed;
+  right:20px; bottom:20px;
+  width:56px; height:56px;
+  border-radius:50%;
+  background:#25D366;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 10px 30px rgba(37,211,102,0.45);
+  z-index:500;
+  transition:transform .18s var(--ease);
+}
+.whatsapp-float:hover{transform:scale(1.08);}
+.whatsapp-float svg{width:28px; height:28px;}
+
+@media (max-width: 600px){
+  .whatsapp-float{right:14px; bottom:14px; width:50px; height:50px;}
+  .whatsapp-float svg{width:24px; height:24px;}
 }

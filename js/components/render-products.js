@@ -7,8 +7,7 @@ function productCardHTML(p){
   const badges = [];
   if (p.condition === "new") badges.push('<span class="badge badge-new">New</span>');
   if (p.condition === "used") badges.push('<span class="badge badge-used">Used</span>');
-  if (p.old_price) badges.push('<span class="badge badge-sale">Sale</span>');
-  if (!p.in_stock) badges.push('<span class="badge badge-out">Out of stock</span>');
+  if (p.old_price) badges.push(`<span class="badge badge-sale">Save ${formatEGP(p.old_price - p.price)}</span>`);
 
   const specs = [p.processor, p.ram, p.storage].filter(Boolean)
     .map(s => `<span>${escapeHTML(shortSpec(s))}</span>`).join("");
@@ -27,6 +26,7 @@ function productCardHTML(p){
       <span class="card-brand">${escapeHTML(p.brand)}</span>
       <a href="product-details.html?id=${p.id}" class="card-name">${escapeHTML(p.name)}</a>
       <div class="card-specs">${specs}</div>
+      <div class="card-stock ${p.in_stock ? '' : 'out'}"><span class="dot"></span>${p.in_stock ? 'In Stock' : 'Out of Stock'}</div>
       <div class="card-footer">
         <div class="card-price-block">
           <span class="price card-price">${formatEGP(p.price)}</span>

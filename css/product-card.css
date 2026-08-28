@@ -76,6 +76,15 @@
 .card-specs span::before{content:'· '; color:var(--border);}
 .card-specs span:first-child::before{content:'';}
 
+.card-stock{
+  display:flex; align-items:center; gap:5px;
+  font-size:11px; color:var(--text-dim);
+  font-family:var(--font-mono);
+}
+.card-stock .dot{width:6px; height:6px; border-radius:50%; background:var(--price); flex-shrink:0;}
+.card-stock.out{color:var(--danger);}
+.card-stock.out .dot{background:var(--danger);}
+
 .card-footer{
   margin-top:auto;
   display:flex; align-items:center; justify-content:space-between;

@@ -20,6 +20,7 @@
   --danger:        #F2685C;   /* out of stock / old price */
 
   --focus-ring:    0 0 0 3px rgba(79,227,193,0.35);
+  --header-bg:     rgba(10,12,17,0.85);
 
   /* ---- type ---- */
   --font-display: 'Space Grotesk', sans-serif;
@@ -53,3 +54,36 @@
 
   --ease: cubic-bezier(.4,0,.2,1);
 }
+
+/* ---- LIGHT THEME ---- */
+:root[data-theme="light"]{
+  --bg:            #F4F6F9;
+  --bg-elevated:   #FFFFFF;
+  --surface:       #FFFFFF;
+  --surface-2:     #EFF2F6;
+  --border:        #E0E4EA;
+  --border-soft:   #EAEDF1;
+
+  --text:          #12151C;
+  --text-dim:      #5A6272;
+  --text-faint:    #8B92A0;
+
+  --accent:        #0EA98C;
+  --accent-dim:    #0B7C66;
+  --accent-glow:   rgba(14,169,140,0.10);
+
+  --amber:         #A6690A;
+  --price:         #0E9D5A;
+  --danger:        #D6473E;
+
+  --focus-ring:    0 0 0 3px rgba(14,169,140,0.3);
+  --header-bg:     rgba(244,246,249,0.85);
+}
+
+html, body,
+.site-header, .site-footer,
+.hero-banner, .spec-terminal, .product-card, .filters-panel,
+.details-price-card, .quick-spec, .compare-table, .review-card{
+  transition:background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+}
+

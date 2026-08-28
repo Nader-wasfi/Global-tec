@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){try{var t=localStorage.getItem('globaltec_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — Global Tec</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="admin-shell">
+
+  <!-- ============ LOGIN ============ -->
+  <div class="admin-login-wrap" id="adminLogin">
+    <div class="admin-login-card">
+      <h1>Global Tec Admin</h1>
+      <p>Sign in to add, edit, or remove laptops from the site.</p>
+      <div class="admin-error" id="loginError"></div>
+      <form id="loginForm">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div id="adminDashboard" style="display:none;">
+    <div class="admin-topbar">
+      <span class="brand-name">Global<span style="color:var(--accent);">Tec</span> Admin</span>
+      <div class="admin-user">
+        <span id="adminUserEmail"></span>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="admin-main">
+      <div class="admin-toolbar">
+        <div>
+          <h1>Products</h1>
+          <span class="count" id="productCount">— items</span>
+        </div>
+        <button class="btn btn-primary" id="addProductBtn">+ Add New Product</button>
+      </div>
+
+      <div class="admin-table-wrap">
+        <div class="admin-row head">
+          <span></span>
+          <span>Name</span>
+          <span class="price-cell">Price</span>
+          <span class="stock-cell">Stock</span>
+          <span></span>
+        </div>
+        <div id="productRows"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ ADD/EDIT MODAL ============ -->
+<div class="admin-modal-backdrop" id="productModalBackdrop">
+  <div class="admin-modal">
+    <div class="admin-modal-head">
+      <h2 id="modalTitle">Add New Product</h2>
+      <button class="admin-modal-close" id="modalCloseBtn" aria-label="Close">✕</button>
+    </div>
+
+    <div class="admin-error" id="formError"></div>
+
+    <form class="admin-form" id="productForm">
+      <input type="hidden" id="pId">
+
+      <div class="field full">
+        <label for="pName">Name</label>
+        <input type="text" id="pName" placeholder="e.g. Dell Latitude 5420 (Touch)" required>
+      </div>
+
+      <div class="field">
+        <label for="pBrand">Brand</label>
+        <input type="text" id="pBrand" placeholder="e.g. Dell" required>
+      </div>
+      <div class="field">
+        <label for="pCondition">Condition</label>
+        <select id="pCondition">
+          <option value="used">Used</option>
+          <option value="new">New</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="pPrice">Price (EGP)</label>
+        <input type="number" id="pPrice" placeholder="12900" required min="0">
+      </div>
+      <div class="field">
+        <label for="pOldPrice">Old Price (optional)</label>
+        <input type="number" id="pOldPrice" placeholder="13900" min="0">
+      </div>
+
+      <div class="field">
+        <label for="pProcessor">Processor</label>
+        <input type="text" id="pProcessor" placeholder="e.g. Core i5-1135G7 (11th Gen)">
+      </div>
+      <div class="field">
+        <label for="pRam">RAM</label>
+        <input type="text" id="pRam" placeholder="e.g. 8GB DDR4">
+      </div>
+
+      <div class="field">
+        <label for="pStorage">Storage</label>
+        <input type="text" id="pStorage" placeholder="e.g. 256GB SSD">
+      </div>
+      <div class="field">
+        <label for="pGpu">Graphics</label>
+        <input type="text" id="pGpu" placeholder="e.g. Intel Iris Xe">
+      </div>
+
+      <div class="field full">
+        <label for="pScreen">Screen</label>
+        <input type="text" id="pScreen" placeholder='e.g. 14" FHD Touch'>
+      </div>
+
+      <div class="field full">
+        <label for="pDescription">Description</label>
+        <textarea id="pDescription" placeholder="A short description of the laptop's condition and strengths."></textarea>
+      </div>
+
+      <div class="field checkbox-field full">
+        <input type="checkbox" id="pInStock" checked>
+        <label for="pInStock">In stock</label>
+      </div>
+
+      <div class="image-uploader">
+        <label>Photos</label>
+        <div class="image-dropzone" id="imageDropzone">
+          Click to choose photos, or drag and drop them here
+          <input type="file" id="imageInput" accept="image/*" multiple style="display:none;">
+        </div>
+        <div class="image-thumbs" id="imageThumbs"></div>
+      </div>
+
+      <div class="admin-form-actions">
+        <button type="button" class="btn btn-ghost" id="cancelFormBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/data/supabase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/services/products-service.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

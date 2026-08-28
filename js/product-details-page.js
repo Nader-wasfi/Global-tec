@@ -19,4 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   renderProductDetails(product);
+
+  const allProducts = await ProductsService.getAll();
+  renderRelatedProducts(product, allProducts);
 });

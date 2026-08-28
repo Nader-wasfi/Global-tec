@@ -1,6 +1,6 @@
 .site-header{
   position:sticky; top:0; z-index:100;
-  background:rgba(10,12,17,0.85);
+  background:var(--header-bg);
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--border-soft);
 }
@@ -81,6 +81,9 @@
 .header-search input::placeholder{color:var(--text-faint);}
 
 .header-actions{display:flex; align-items:center; gap:10px; flex-shrink:0;}
+.theme-toggle .icon-moon{display:none;}
+:root[data-theme="light"] .theme-toggle .icon-sun{display:none;}
+:root[data-theme="light"] .theme-toggle .icon-moon{display:block;}
 .nav-toggle{
   display:none;
   align-items:center; justify-content:center;

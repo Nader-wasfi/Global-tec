@@ -2,13 +2,22 @@
    RENDER DETAILS — fills product-details.html for a single product.
    ========================================================================== */
 
-const WHATSAPP_NUMBER = "201000000000"; // update to the real business number
-
 function renderProductDetails(p){
   document.getElementById("pageTitleTag").textContent = `${p.name} — Global Tec`;
   document.getElementById("breadcrumbName").textContent = p.name;
   document.getElementById("productBrand").textContent = p.brand;
   document.getElementById("productName").textContent = p.name;
+
+  // SEO / social preview tags
+  const shortDesc = `${p.name} — ${p.processor || ""}${p.ram ? ", " + p.ram : ""}. ${formatEGP(p.price)} at Global Tec.`;
+  const descTag = document.getElementById("pageDescTag");
+  if (descTag) descTag.setAttribute("content", shortDesc);
+  const ogTitle = document.getElementById("ogTitleTag");
+  if (ogTitle) ogTitle.setAttribute("content", `${p.name} — Global Tec`);
+  const ogDesc = document.getElementById("ogDescTag");
+  if (ogDesc) ogDesc.setAttribute("content", shortDesc);
+  const ogImage = document.getElementById("ogImageTag");
+  if (ogImage) ogImage.setAttribute("content", p.image_url || "");
 
   // gallery
   const gallery = (p.image_gallery && p.image_gallery.length) ? p.image_gallery : [p.image_url];
@@ -36,7 +45,10 @@ function renderProductDetails(p){
   // badges
   const badges = [];
   badges.push(p.condition === "new" ? '<span class="badge badge-new">New</span>' : '<span class="badge badge-used">Used</span>');
-  if (p.old_price) badges.push('<span class="badge badge-sale">On Sale</span>');
+  if (p.old_price) badges.push(`<span class="badge badge-sale">Save ${formatEGP(p.old_price - p.price)}</span>`);
+  if (typeof SITE_INFO !== "undefined" && SITE_INFO.warrantyMonths){
+    badges.push(`<span class="badge badge-warranty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.4 8.4 8 11 4.6-2.6 8-6 8-11V5z"/></svg>${SITE_INFO.warrantyMonths}-Month Warranty</span>`);
+  }
   document.getElementById("productBadges").innerHTML = badges.join("");
 
   // price
@@ -70,10 +82,19 @@ function renderProductDetails(p){
 
   const contactBtn = document.getElementById("contactBtn");
   const msg = encodeURIComponent(`Hi Global Tec, I'm interested in the ${p.name} (${formatEGP(p.price)}). Is it available?`);
-  contactBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+  contactBtn.href = `https://wa.me/${SITE_INFO.whatsappNumber}?text=${msg}`;
   contactBtn.target = "_blank";
   if (!p.in_stock){
     contactBtn.textContent = "Notify Me When Available";
+  }
+
+  // inspection note (used units only)
+  const inspectionNote = document.getElementById("inspectionNote");
+  if (p.condition === "used" && typeof SITE_INFO !== "undefined" && SITE_INFO.batteryHealthMin){
+    inspectionNote.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+      <span>Inspected before listing — battery health ${SITE_INFO.batteryHealthMin}%+ and storage health ${SITE_INFO.storageHealthMin}%+, guaranteed.</span>`;
+  } else {
+    inspectionNote.innerHTML = "";
   }
 
   // quick specs
@@ -103,4 +124,28 @@ function renderProductDetails(p){
   ).join("");
 
   document.getElementById("productDescription").textContent = p.description || "No description provided yet.";
+}
+
+/* Related products: same brand first, then fills with nearby-priced laptops. */
+function renderRelatedProducts(current, allProducts){
+  const section = document.getElementById("relatedSection");
+  const grid = document.getElementById("relatedGrid");
+  if (!section || !grid) return;
+
+  const pool = allProducts.filter(p => p.id !== current.id);
+  const sameBrand = pool.filter(p => p.brand === current.brand);
+  const priceSorted = [...pool].sort((a, b) =>
+    Math.abs(a.price - current.price) - Math.abs(b.price - current.price)
+  );
+
+  const related = [];
+  const seen = new Set();
+  [...sameBrand, ...priceSorted].forEach(p => {
+    if (related.length < 4 && !seen.has(p.id)){ related.push(p); seen.add(p.id); }
+  });
+
+  if (!related.length) return;
+  grid.innerHTML = related.map(productCardHTML).join("");
+  bindCompareToggles(grid);
+  section.style.display = "";
 }

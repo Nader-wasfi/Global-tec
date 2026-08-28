@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const state = {
     condition: params.getAll("condition").length ? params.getAll("condition") : (params.get("condition") ? [params.get("condition")] : []),
     brand: params.get("brand") ? [params.get("brand")] : [],
+    stock: params.getAll("stock").length ? params.getAll("stock") : (params.get("stock") ? [params.get("stock")] : []),
+    touch: params.get("touch") === "1",
     minPrice: params.get("min") || "",
     maxPrice: params.get("max") || "",
     search: params.get("search") || "",
@@ -27,15 +29,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll('input[name="condition"]').forEach(cb => {
     cb.checked = state.condition.includes(cb.value);
   });
+  // reflect stock checkboxes
+  document.querySelectorAll('input[name="stock"]').forEach(cb => {
+    cb.checked = state.stock.includes(cb.value);
+  });
   document.getElementById("minPrice").value = state.minPrice;
   document.getElementById("maxPrice").value = state.maxPrice;
   document.getElementById("sortSelect").value = state.sort;
+  document.getElementById("touchFilter").checked = state.touch;
   if (state.search) document.getElementById("headerSearch").value = state.search;
 
   function readFormFilters(){
     return {
       condition: Array.from(document.querySelectorAll('input[name="condition"]:checked')).map(el => el.value),
       brand: Array.from(document.querySelectorAll('input[name="brand"]:checked')).map(el => el.value),
+      stock: Array.from(document.querySelectorAll('input[name="stock"]:checked')).map(el => el.value),
+      touch: document.getElementById("touchFilter").checked,
       minPrice: document.getElementById("minPrice").value,
       maxPrice: document.getElementById("maxPrice").value,
       search: state.search,
@@ -60,6 +69,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     filters.brand.forEach(b => chips.push({ label: b, clear: () => {
       document.querySelector(`input[name="brand"][value="${b}"]`).checked = false;
     }}));
+    filters.stock.forEach(s => chips.push({ label: s === "in" ? "In Stock" : "Out of Stock", clear: () => {
+      document.querySelector(`input[name="stock"][value="${s}"]`).checked = false;
+    }}));
+    if (filters.touch) chips.push({ label: "Touch Screen", clear: () => {
+      document.getElementById("touchFilter").checked = false;
+    }});
     if (filters.minPrice || filters.maxPrice) chips.push({ label: `${filters.minPrice || 0}–${filters.maxPrice || "∞"} EGP`, clear: () => {
       document.getElementById("minPrice").value = ""; document.getElementById("maxPrice").value = "";
     }});
@@ -91,6 +106,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   // condition checkboxes react instantly
   document.querySelectorAll('input[name="condition"]').forEach(cb => cb.addEventListener("change", runQuery));
+  // stock checkboxes react instantly
+  document.querySelectorAll('input[name="stock"]').forEach(cb => cb.addEventListener("change", runQuery));
+  // touch filter reacts instantly
+  document.getElementById("touchFilter").addEventListener("change", runQuery);
 
   // mobile filter drawer
   const panel = document.getElementById("filtersPanel");

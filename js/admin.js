@@ -7,6 +7,7 @@
 
 let currentImages = [];   // URLs for the product currently being added/edited
 let editingId = null;     // null while adding a new product
+let currentTab = "laptop"; // "laptop" | "accessory" | "reviews"
 
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof supabaseClient === "undefined"){
@@ -52,6 +53,23 @@ document.addEventListener("DOMContentLoaded", () => {
     await supabaseClient.auth.signOut();
   });
 
+  // ---- tabs: Laptops / Accessories / Reviews ----
+  document.querySelectorAll(".admin-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentTab = btn.getAttribute("data-tab");
+      document.querySelectorAll(".admin-tab").forEach(b => b.classList.toggle("active", b === btn));
+      const isReviews = currentTab === "reviews";
+      document.getElementById("productsPanel").style.display = isReviews ? "none" : "";
+      document.getElementById("reviewsPanel").style.display = isReviews ? "" : "none";
+      if (isReviews){
+        loadReviewList();
+      } else {
+        document.getElementById("productsPanelTitle").textContent = currentTab === "laptop" ? "Laptops" : "Accessories";
+        loadProductList();
+      }
+    });
+  });
+
   // ---- modal open/close ----
   document.getElementById("addProductBtn").addEventListener("click", () => openModal());
   document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
@@ -60,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.id === "productModalBackdrop") closeModal();
   });
 
-  // ---- image upload ----
+  // ---- image upload (product photos) ----
   const dropzone = document.getElementById("imageDropzone");
   const fileInput = document.getElementById("imageInput");
   dropzone.addEventListener("click", () => fileInput.click());
@@ -71,6 +89,19 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     dropzone.classList.remove("dragover");
     handleFiles(e.dataTransfer.files);
+  });
+
+  // ---- image upload (review screenshots) ----
+  const reviewDropzone = document.getElementById("reviewDropzone");
+  const reviewInput = document.getElementById("reviewInput");
+  reviewDropzone.addEventListener("click", () => reviewInput.click());
+  reviewInput.addEventListener("change", () => handleReviewFiles(reviewInput.files));
+  reviewDropzone.addEventListener("dragover", (e) => { e.preventDefault(); reviewDropzone.classList.add("dragover"); });
+  reviewDropzone.addEventListener("dragleave", () => reviewDropzone.classList.remove("dragover"));
+  reviewDropzone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    reviewDropzone.classList.remove("dragover");
+    handleReviewFiles(e.dataTransfer.files);
   });
 
   // ---- form submit ----
@@ -91,12 +122,13 @@ function showDashboard(user){
 
 async function loadProductList(){
   ProductsService.invalidateCache();
-  const products = await ProductsService.getAll();
+  const all = await ProductsService.getAll();
+  const products = all.filter(p => (p.category || "laptop") === currentTab);
   const rowsEl = document.getElementById("productRows");
   document.getElementById("productCount").textContent = `${products.length} item${products.length === 1 ? "" : "s"}`;
 
   if (!products.length){
-    rowsEl.innerHTML = `<div class="admin-empty">No products yet — click "Add New Product" to create your first listing.</div>`;
+    rowsEl.innerHTML = `<div class="admin-empty">No ${currentTab === "laptop" ? "laptops" : "accessories"} yet — click "Add New Product" to create your first listing.</div>`;
     return;
   }
 
@@ -126,12 +158,30 @@ async function loadProductList(){
   });
 }
 
+async function loadReviewList(){
+  ReviewsService.invalidateCache();
+  const reviews = await ReviewsService.getAll();
+  document.getElementById("reviewCount").textContent = `${reviews.length} item${reviews.length === 1 ? "" : "s"}`;
+
+  const wrap = document.getElementById("reviewThumbs");
+  wrap.innerHTML = reviews.map(r => `
+    <div class="image-thumb">
+      <img src="${r.image_url}" alt="">
+      <button type="button" class="remove-thumb" data-remove-review="${r.id}">✕</button>
+    </div>`).join("");
+
+  wrap.querySelectorAll("[data-remove-review]").forEach(btn => {
+    btn.addEventListener("click", () => deleteReview(btn.getAttribute("data-remove-review")));
+  });
+}
+
 function openModal(product){
   editingId = product ? product.id : null;
   currentImages = product ? [...(product.image_gallery || [])] : [];
 
-  document.getElementById("modalTitle").textContent = product ? "Edit Product" : "Add New Product";
+  document.getElementById("modalTitle").textContent = product ? "Edit Product" : (currentTab === "laptop" ? "Add New Laptop" : "Add New Accessory");
   document.getElementById("pId").value = product ? product.id : makeId();
+  document.getElementById("pCategory").value = product ? (product.category || "laptop") : currentTab;
   document.getElementById("pName").value = product ? product.name : "";
   document.getElementById("pBrand").value = product ? product.brand : "";
   document.getElementById("pCondition").value = product ? product.condition : "used";
@@ -226,6 +276,7 @@ async function saveProduct(e){
     id: document.getElementById("pId").value,
     name,
     brand,
+    category: document.getElementById("pCategory").value,
     condition: document.getElementById("pCondition").value,
     price,
     old_price: oldPriceRaw === "" ? null : Number(oldPriceRaw),
@@ -270,6 +321,48 @@ async function deleteProduct(id){
     return;
   }
   loadProductList();
+}
+
+async function handleReviewFiles(fileList){
+  const files = Array.from(fileList);
+  for (const file of files){
+    const placeholder = document.createElement("div");
+    placeholder.className = "image-thumb uploading";
+    placeholder.textContent = "Uploading…";
+    document.getElementById("reviewThumbs").appendChild(placeholder);
+
+    try {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const id = "rv-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
+      const path = `reviews/${id}.${ext}`;
+      const { error: uploadError } = await supabaseClient.storage
+        .from("product-images")
+        .upload(path, file);
+      if (uploadError) throw uploadError;
+
+      const { data: pub } = supabaseClient.storage.from("product-images").getPublicUrl(path);
+      const { error: insertError } = await supabaseClient.from("reviews").insert({
+        id, image_url: pub.publicUrl, sort_order: Date.now()
+      });
+      if (insertError) throw insertError;
+
+      placeholder.remove();
+      loadReviewList();
+    } catch (err){
+      alert("Review upload failed: " + err.message + (err.message && err.message.includes("relation") ? "\n\nMake sure you've run sql/migration-add-reviews.sql in Supabase." : ""));
+      placeholder.remove();
+    }
+  }
+}
+
+async function deleteReview(id){
+  if (!confirm("Delete this review screenshot? This can't be undone.")) return;
+  const { error } = await supabaseClient.from("reviews").delete().eq("id", id);
+  if (error){
+    alert("Couldn't delete: " + error.message);
+    return;
+  }
+  loadReviewList();
 }
 
 function escapeHTML(str){

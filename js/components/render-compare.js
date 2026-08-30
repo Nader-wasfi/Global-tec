@@ -2,24 +2,29 @@
    RENDER COMPARE — builds the side-by-side comparison table.
    ========================================================================== */
 
-const COMPARE_ROWS = [
-  { key: "price",     label: "Price",      fmt: p => formatEGP(p.price) },
-  { key: "condition", label: "Condition",  fmt: p => p.condition === "new" ? "Brand New" : "Used — Inspected" },
-  { key: "processor", label: "Processor" },
-  { key: "ram",        label: "RAM" },
-  { key: "storage",    label: "Storage" },
-  { key: "gpu",        label: "Graphics" },
-  { key: "screen",     label: "Display" },
-  { key: "in_stock",  label: "Availability", fmt: p => p.in_stock ? "In stock" : "Out of stock" }
-];
+function getCompareRows(){
+  const tr = typeof t === "function" ? t : (k => k);
+  return [
+    { key: "price",     label: tr("compare.price"),      fmt: p => formatEGP(p.price) },
+    { key: "condition", label: tr("compare.condition"),  fmt: p => p.condition === "new" ? tr("compare.conditionNew") : tr("compare.conditionUsed") },
+    { key: "processor", label: tr("compare.processor") },
+    { key: "ram",        label: tr("compare.ram") },
+    { key: "storage",    label: tr("compare.storage") },
+    { key: "gpu",        label: tr("compare.gpu") },
+    { key: "screen",     label: tr("compare.display") },
+    { key: "in_stock",  label: tr("compare.availability"), fmt: p => p.in_stock ? tr("compare.inStock") : tr("compare.outStock") }
+  ];
+}
 
 function renderCompareTable(products){
   const root = document.getElementById("compareContent");
+  const tr = typeof t === "function" ? t : (k => k);
+  const COMPARE_ROWS = getCompareRows();
 
   if (!products.length){
     root.innerHTML = `<div class="compare-empty">
-      <h3>No laptops selected yet</h3>
-      <p>Pick up to 3 laptops below and this table fills in automatically.</p>
+      <h3>${tr("compare.emptyTitle")}</h3>
+      <p>${tr("compare.emptyText")}</p>
     </div>`;
     return;
   }

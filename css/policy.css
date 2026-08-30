@@ -15,6 +15,7 @@
 .policy-content li{margin-bottom:8px;}
 .policy-content a{color:var(--accent); text-decoration:underline;}
 
+
 .contact-grid{
   display:grid;
   grid-template-columns:1fr 1fr;

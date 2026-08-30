@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <script>(function(){try{var t=localStorage.getItem('globaltec_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Admin — Global Tec</title>
+<title>Admin — Global Tech </title>
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +22,7 @@
   <!-- ============ LOGIN ============ -->
   <div class="admin-login-wrap" id="adminLogin">
     <div class="admin-login-card">
-      <h1>Global Tec Admin</h1>
+      <h1>Global Tech Admin</h1>
       <p>Sign in to add, edit, or remove laptops from the site.</p>
       <div class="admin-error" id="loginError"></div>
       <form id="loginForm">
@@ -50,23 +50,52 @@
     </div>
 
     <div class="admin-main">
-      <div class="admin-toolbar">
-        <div>
-          <h1>Products</h1>
-          <span class="count" id="productCount">— items</span>
-        </div>
-        <button class="btn btn-primary" id="addProductBtn">+ Add New Product</button>
+      <div class="admin-tabs" id="adminTabs">
+        <button class="admin-tab active" data-tab="laptop">Laptops</button>
+        <button class="admin-tab" data-tab="accessory">Accessories</button>
+        <button class="admin-tab" data-tab="reviews">Reviews</button>
       </div>
 
-      <div class="admin-table-wrap">
-        <div class="admin-row head">
-          <span></span>
-          <span>Name</span>
-          <span class="price-cell">Price</span>
-          <span class="stock-cell">Stock</span>
-          <span></span>
+      <!-- ---- Laptops / Accessories panel ---- -->
+      <div id="productsPanel">
+        <div class="admin-toolbar">
+          <div>
+            <h1 id="productsPanelTitle">Laptops</h1>
+            <span class="count" id="productCount">— items</span>
+          </div>
+          <button class="btn btn-primary" id="addProductBtn">+ Add New Product</button>
         </div>
-        <div id="productRows"></div>
+
+        <div class="admin-table-wrap">
+          <div class="admin-row head">
+            <span></span>
+            <span>Name</span>
+            <span class="price-cell">Price</span>
+            <span class="stock-cell">Stock</span>
+            <span></span>
+          </div>
+          <div id="productRows"></div>
+        </div>
+      </div>
+
+      <!-- ---- Reviews panel ---- -->
+      <div id="reviewsPanel" style="display:none;">
+        <div class="admin-toolbar">
+          <div>
+            <h1>Reviews</h1>
+            <span class="count" id="reviewCount">— items</span>
+          </div>
+        </div>
+        <p style="color:var(--text-dim); font-size:var(--fs-sm); margin-bottom:var(--sp-4);">
+          Upload screenshots of customer reviews (WhatsApp chats, Google reviews, etc). They show up in the "What People Say" section on the homepage.
+        </p>
+        <div class="image-uploader">
+          <div class="image-dropzone" id="reviewDropzone">
+            Click to choose review screenshots, or drag and drop them here
+            <input type="file" id="reviewInput" accept="image/*" multiple style="display:none;">
+          </div>
+          <div class="image-thumbs" id="reviewThumbs"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -85,6 +114,7 @@
 
     <form class="admin-form" id="productForm">
       <input type="hidden" id="pId">
+      <input type="hidden" id="pCategory" value="laptop">
 
       <div class="field full">
         <label for="pName">Name</label>
@@ -166,6 +196,7 @@
 <script src="js/data/supabase-config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/services/products-service.js"></script>
+<script src="js/services/reviews-service.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

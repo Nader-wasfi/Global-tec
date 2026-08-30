@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const notes = document.getElementById("tiNotes").value.trim();
 
     const lines = [
-      "Hi Global Tec, I'd like to sell/trade in a laptop:",
+      "Hi Global Tech, I'd like to sell/trade in a laptop:",
       `Brand: ${brand}`,
       `Model: ${model}`
     ];

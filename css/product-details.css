@@ -53,6 +53,8 @@
 .stock-line.out .dot{background:var(--danger);}
 .stock-line.out{color:var(--danger);}
 .details-actions{display:flex; gap:10px; flex-wrap:wrap;}
+.details-actions #addFavoriteBtn{width:44px; flex:0 0 auto; padding:0;}
+.details-actions #addFavoriteBtn.active{background:var(--danger); color:#fff; border-color:var(--danger);}
 .inspection-note{
   display:flex; align-items:flex-start; gap:8px;
   margin-top:var(--sp-3); padding-top:var(--sp-3);

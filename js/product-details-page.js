@@ -2,7 +2,10 @@
    PRODUCT DETAILS PAGE CONTROLLER
    ========================================================================== */
 
-document.addEventListener("DOMContentLoaded", async () => {
+let _currentDetailsProduct = null;
+let _currentDetailsAllProducts = null;
+
+async function loadProductDetailsPage(){
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
   const root = document.getElementById("detailsRoot");
@@ -10,16 +13,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   const product = id ? await ProductsService.getById(id) : null;
 
   if (!product){
+    const tr = typeof t === "function" ? t : (k => k);
     root.innerHTML = `<div class="empty-state">
-      <h3>Laptop not found</h3>
-      <p>It may have been sold or the link is outdated.</p>
-      <a href="products.html" class="btn btn-primary">Browse All Laptops</a>
+      <h3>${tr("details.notFoundTitle")}</h3>
+      <p>${tr("details.notFoundText")}</p>
+      <a href="products.html" class="btn btn-primary">${tr("details.browseAll")}</a>
     </div>`;
     return;
   }
 
+  _currentDetailsProduct = product;
   renderProductDetails(product);
 
-  const allProducts = await ProductsService.getAll();
-  renderRelatedProducts(product, allProducts);
-});
+  _currentDetailsAllProducts = await ProductsService.getAll();
+  renderRelatedProducts(product, _currentDetailsAllProducts);
+}
+
+document.addEventListener("DOMContentLoaded", loadProductDetailsPage);

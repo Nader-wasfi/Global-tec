@@ -21,6 +21,14 @@ function initSharedUI(){
   updateBadge();
   document.addEventListener("compare:changed", updateBadge);
 
+  // favorites badge count, kept live across tabs/pages
+  const updateFavBadge = () => {
+    const el = document.getElementById("favoritesCount");
+    if (el && typeof FavoritesStore !== "undefined") el.textContent = FavoritesStore.getIds().length;
+  };
+  updateFavBadge();
+  document.addEventListener("favorites:changed", updateFavBadge);
+
   // header search
   const headerSearch = document.getElementById("headerSearch");
   if (headerSearch){
@@ -85,8 +93,9 @@ function applySiteInfo(){
   if (fEmail) fEmail.textContent = SITE_INFO.email;
 
   // ---- contact.html only ----
+  const tr = typeof t === "function" ? t : (k => k);
   const cWa = document.getElementById("contactWhatsappLink");
-  if (cWa){ cWa.href = waHref; cWa.textContent = "WhatsApp: " + SITE_INFO.whatsappDisplay; }
+  if (cWa){ cWa.href = waHref; cWa.textContent = tr("contact.whatsappPrefix") + SITE_INFO.whatsappDisplay; }
 
   const cPhone = document.getElementById("contactPhoneLink");
   if (cPhone){ cPhone.href = "tel:+" + SITE_INFO.phoneNumber; cPhone.textContent = SITE_INFO.phoneDisplay; }

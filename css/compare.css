@@ -2,10 +2,14 @@
 .compare-table{width:100%; border-collapse:collapse; min-width:640px;}
 .compare-table th, .compare-table td{
   padding:var(--sp-3);
-  border-bottom:1px solid var(--border-soft);
+  border:none;
   text-align:left;
   vertical-align:top;
 }
+.compare-table tbody tr:nth-child(odd){background:var(--surface);}
+.compare-table tbody tr{border-radius:var(--radius-sm);}
+.compare-table tbody td:first-child{border-top-left-radius:var(--radius-sm); border-bottom-left-radius:var(--radius-sm);}
+.compare-table tbody td:last-child{border-top-right-radius:var(--radius-sm); border-bottom-right-radius:var(--radius-sm);}
 .compare-table td:first-child, .compare-table th:first-child{
   font-family:var(--font-mono);
   font-size:11px; text-transform:uppercase; letter-spacing:0.06em;

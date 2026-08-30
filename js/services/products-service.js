@@ -49,12 +49,18 @@ const ProductsService = {
 
   async getFeatured(limit = 4){
     const all = await _fetchAllProducts();
-    return all.slice(0, limit);
+    return all.filter(p => (p.category || "laptop") === "laptop").slice(0, limit);
   },
 
   async getByCondition(condition, limit = 4){
     const all = await _fetchAllProducts();
-    return all.filter(p => p.condition === condition).slice(0, limit);
+    return all.filter(p => p.condition === condition && (p.category || "laptop") === "laptop").slice(0, limit);
+  },
+
+  async getAccessories(limit){
+    const all = await _fetchAllProducts();
+    const items = all.filter(p => p.category === "accessory");
+    return limit ? items.slice(0, limit) : items;
   },
 
   async getStats(){
@@ -69,16 +75,21 @@ const ProductsService = {
   async getBrands(){
     const all = await _fetchAllProducts();
     const counts = {};
-    all.forEach(p => { counts[p.brand] = (counts[p.brand] || 0) + 1; });
+    all.filter(p => (p.category || "laptop") === "laptop").forEach(p => { counts[p.brand] = (counts[p.brand] || 0) + 1; });
     return Object.keys(counts).sort().map(brand => ({ brand, count: counts[brand] }));
   },
 
   /**
-   * filters: { condition: [], brand: [], stock: [], touch, minPrice, maxPrice, search, sort }
+   * filters: { condition: [], brand: [], category: [], stock: [], touch, minPrice, maxPrice, search, sort }
+   * category defaults to ["laptop"] when omitted, so laptop listing pages
+   * never mix in accessories unless explicitly asked for.
    */
   async query(filters = {}){
     let results = await _fetchAllProducts();
     results = [...results];
+
+    const categoryFilter = (filters.category && filters.category.length) ? filters.category : ["laptop"];
+    results = results.filter(p => categoryFilter.includes(p.category || "laptop"));
 
     if (filters.condition && filters.condition.length){
       results = results.filter(p => filters.condition.includes(p.condition));

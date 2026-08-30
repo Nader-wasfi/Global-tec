@@ -1,39 +1,19 @@
 /* ==========================================================================
-   RENDER REVIEWS — customer review screenshots, dropped into images/reviews/
-   as review-1.jpg, review-2.jpg, etc (jpg or png). Missing files are skipped
-   silently; the whole section stays hidden until at least one image exists.
+   RENDER REVIEWS — customer review screenshots, managed from the admin
+   panel's Reviews tab. The section stays hidden until at least one review
+   has been added.
    ========================================================================== */
-
-const REVIEWS_MAX = 12;
-
-function tryLoadReview(i){
-  return new Promise(resolve => {
-    const tryExt = (ext, isRetry) => {
-      const img = new Image();
-      img.onload = () => resolve(`images/reviews/review-${i}.${ext}`);
-      img.onerror = () => {
-        if (!isRetry) tryExt("png", true);
-        else resolve(null);
-      };
-      img.src = `images/reviews/review-${i}.${ext}`;
-    };
-    tryExt("jpg", false);
-  });
-}
 
 async function initReviews(){
   const section = document.getElementById("reviewsSection");
   const track = document.getElementById("reviewsTrack");
-  if (!section || !track) return;
+  if (!section || !track || typeof ReviewsService === "undefined") return;
 
-  const attempts = [];
-  for (let i = 1; i <= REVIEWS_MAX; i++) attempts.push(tryLoadReview(i));
-  const sources = (await Promise.all(attempts)).filter(Boolean);
+  const reviews = await ReviewsService.getAll();
+  if (!reviews.length){ section.style.display = "none"; return; }
 
-  if (!sources.length) return; // stays hidden — nothing dropped in images/reviews/ yet
-
-  track.innerHTML = sources.map(src =>
-    `<div class="review-card"><img src="${src}" alt="Customer review" loading="lazy"></div>`
+  track.innerHTML = reviews.map(r =>
+    `<div class="review-card"><img src="${r.image_url}" alt="Customer review" loading="lazy"></div>`
   ).join("");
 
   track.querySelectorAll("img").forEach(img => {

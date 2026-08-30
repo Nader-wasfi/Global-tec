@@ -91,9 +91,37 @@
       </div>
 
       <div class="filter-group">
+        <div class="filter-title"><span data-i18n="products.brand">Brand</span> <span class="reset-link" id="resetBrand" data-i18n="products.clear">Clear</span></div>
+        <div id="brandFilterList">
+          <!-- populated dynamically -->
+        </div>
+      </div>
+
+      <div class="filter-group">
         <div class="filter-title" data-i18n="products.condition">Condition</div>
         <label class="filter-option"><input type="checkbox" name="condition" value="new" /> <span data-i18n="products.new">New</span></label>
         <label class="filter-option"><input type="checkbox" name="condition" value="used" /> <span data-i18n="nav.used">Used</span></label>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title" data-i18n="products.ram">RAM</div>
+        <label class="filter-option"><input type="checkbox" name="ram" value="8GB" /> <span>8GB</span></label>
+        <label class="filter-option"><input type="checkbox" name="ram" value="16GB" /> <span>16GB</span></label>
+        <label class="filter-option"><input type="checkbox" name="ram" value="32GB" /> <span>32GB</span></label>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title" data-i18n="products.storage">Storage</div>
+        <label class="filter-option"><input type="checkbox" name="storage" value="256GB" /> <span>256GB</span></label>
+        <label class="filter-option"><input type="checkbox" name="storage" value="512GB" /> <span>512GB</span></label>
+        <label class="filter-option"><input type="checkbox" name="storage" value="1TB" /> <span>1TB</span></label>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title" data-i18n="products.screenSize">Screen Size</div>
+        <div id="screenSizeFilterList">
+          <!-- populated dynamically from what's actually in the catalog -->
+        </div>
       </div>
 
       <div class="filter-group">
@@ -105,13 +133,6 @@
       <div class="filter-group">
         <div class="filter-title" data-i18n="products.display">Display</div>
         <label class="filter-option"><input type="checkbox" id="touchFilter" /> <span data-i18n="products.touchScreen">Touch Screen</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title"><span data-i18n="products.brand">Brand</span> <span class="reset-link" id="resetBrand" data-i18n="products.clear">Clear</span></div>
-        <div id="brandFilterList">
-          <!-- populated dynamically -->
-        </div>
       </div>
 
       <div class="filter-group">

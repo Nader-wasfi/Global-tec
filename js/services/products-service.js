@@ -97,6 +97,15 @@ const ProductsService = {
     if (filters.brand && filters.brand.length){
       results = results.filter(p => filters.brand.includes(p.brand));
     }
+    if (filters.ram && filters.ram.length){
+      results = results.filter(p => filters.ram.some(size => ramMatches(p.ram, size)));
+    }
+    if (filters.storage && filters.storage.length){
+      results = results.filter(p => filters.storage.some(size => storageMatches(p.storage, size)));
+    }
+    if (filters.screenSize && filters.screenSize.length){
+      results = results.filter(p => filters.screenSize.includes(extractScreenSize(p.screen)));
+    }
     if (filters.stock && filters.stock.length === 1){
       const wantIn = filters.stock[0] === "in";
       results = results.filter(p => p.in_stock === wantIn);

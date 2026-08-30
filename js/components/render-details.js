@@ -52,6 +52,10 @@ function renderProductDetails(p){
   }
   document.getElementById("productBadges").innerHTML = badges.join("");
 
+  // star rating (only shows if the admin set one)
+  const ratingEl = document.getElementById("productRating");
+  if (ratingEl) ratingEl.innerHTML = renderStars(p.rating, p.rating_count);
+
   // price
   document.getElementById("productPrice").textContent = formatEGP(p.price);
   document.getElementById("productOldPrice").textContent = p.old_price ? formatEGP(p.old_price) : "";
@@ -64,6 +68,17 @@ function renderProductDetails(p){
   } else {
     stockLine.className = "stock-line out";
     stockLine.innerHTML = `<span class="dot"></span> ${tr("details.outStock")}`;
+  }
+
+  // "X people viewed today" — only shows once there's something to show
+  const viewsLine = document.getElementById("viewsTodayLine");
+  if (viewsLine){
+    if (p.views_today && p.views_today > 0){
+      viewsLine.textContent = tr("details.viewsToday", {n: p.views_today});
+      viewsLine.style.display = "";
+    } else {
+      viewsLine.style.display = "none";
+    }
   }
 
   // actions
@@ -93,9 +108,18 @@ function renderProductDetails(p){
   }
 
   const contactBtn = document.getElementById("contactBtn");
-  const msg = encodeURIComponent(`Hi Global Tech, I'm interested in the ${p.name} (${formatEGP(p.price)}). Is it available?`);
-  contactBtn.href = `https://wa.me/${SITE_INFO.whatsappNumber}?text=${msg}`;
+  const specsLine = [p.processor, p.ram, p.storage].filter(Boolean).join(" / ");
+  const orderMsg = encodeURIComponent(
+    `Hi Global Tech! I'd like to order:\n\n` +
+    `${p.name}\n` +
+    (specsLine ? `${specsLine}\n` : "") +
+    `Price: ${formatEGP(p.price)}\n` +
+    `Condition: ${p.condition === "new" ? "New" : "Used"}\n\n` +
+    `${window.location.href}`
+  );
+  contactBtn.href = `https://wa.me/${SITE_INFO.whatsappNumber}?text=${orderMsg}`;
   contactBtn.target = "_blank";
+  contactBtn.textContent = tr("details.orderNow");
   if (!p.in_stock){
     contactBtn.textContent = tr("details.notifyMe");
   }
@@ -136,15 +160,59 @@ function renderProductDetails(p){
   ).join("");
 
   document.getElementById("productDescription").textContent = p.description || tr("details.noDescription");
+
+  // Google-friendly structured data — helps the product show price/availability/rating in search results
+  injectProductSchema(p);
+
+  // fire-and-forget view counter (also powers "X people viewed today" above)
+  if (typeof ProductsService !== "undefined") ProductsService.incrementView(p.id);
 }
 
-/* Related products: same brand first, then fills with nearby-priced laptops. */
+function injectProductSchema(p){
+  const existing = document.getElementById("productSchema");
+  if (existing) existing.remove();
+
+  const schema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": p.name,
+    "image": (p.image_gallery && p.image_gallery.length) ? p.image_gallery : [p.image_url],
+    "description": p.description || `${p.name} — ${p.processor || ""} ${p.ram || ""}`.trim(),
+    "brand": { "@type": "Brand", "name": p.brand },
+    "offers": {
+      "@type": "Offer",
+      "url": window.location.href,
+      "priceCurrency": "EGP",
+      "price": p.price,
+      "availability": p.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "itemCondition": p.condition === "new" ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition"
+    }
+  };
+  if (p.rating && p.rating_count){
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      "ratingValue": p.rating,
+      "reviewCount": p.rating_count
+    };
+  }
+
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.id = "productSchema";
+  script.textContent = JSON.stringify(schema);
+  document.head.appendChild(script);
+}
+
+/* Related products: prioritizes same category, then same brand, then
+   fills the rest with similarly priced items — so a laptop page never
+   suggests accessories and vice-versa. */
 function renderRelatedProducts(current, allProducts){
   const section = document.getElementById("relatedSection");
   const grid = document.getElementById("relatedGrid");
   if (!section || !grid) return;
 
-  const pool = allProducts.filter(p => p.id !== current.id);
+  const currentCategory = current.category || "laptop";
+  const pool = allProducts.filter(p => p.id !== current.id && (p.category || "laptop") === currentCategory);
   const sameBrand = pool.filter(p => p.brand === current.brand);
   const priceSorted = [...pool].sort((a, b) =>
     Math.abs(a.price - current.price) - Math.abs(b.price - current.price)
@@ -159,5 +227,6 @@ function renderRelatedProducts(current, allProducts){
   if (!related.length) return;
   grid.innerHTML = related.map(productCardHTML).join("");
   bindCompareToggles(grid);
+  bindFavoriteToggles(grid);
   section.style.display = "";
 }

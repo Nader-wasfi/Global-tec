@@ -80,6 +80,9 @@ function applySiteInfo(){
   const waFloat = document.getElementById("whatsappFloat");
   if (waFloat) waFloat.href = waHref;
 
+  const headerCall = document.getElementById("headerCallLink");
+  if (headerCall) headerCall.href = "tel:+" + SITE_INFO.phoneNumber;
+
   const genericWaLink = document.getElementById("returnsWhatsappLink");
   if (genericWaLink) genericWaLink.href = waHref;
 

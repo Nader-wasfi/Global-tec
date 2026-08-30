@@ -67,6 +67,17 @@
   letter-spacing:0.08em;
   color:var(--text-faint);
 }
+.star-rating{
+  display:inline-flex; align-items:center; gap:2px;
+  color:#F5B301;
+}
+.star-rating svg{flex-shrink:0;}
+.star-rating .rating-count{
+  font-family:var(--font-mono);
+  font-size:var(--fs-xs);
+  color:var(--text-faint);
+  margin-left:2px;
+}
 .card-name{
   font-family:var(--font-display);
   font-size:var(--fs-base);

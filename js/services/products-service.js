@@ -47,6 +47,18 @@ const ProductsService = {
     return all.find(p => p.id === id) || null;
   },
 
+  /* Fire-and-forget view counter — bumps view_count and the "today" count
+     via a Postgres function (see sql/migration-add-ratings-and-views.sql).
+     Safe to call even before that migration has run: fails silently. */
+  async incrementView(id){
+    if (typeof supabaseClient === "undefined") return;
+    try {
+      await supabaseClient.rpc("increment_product_view", { p_id: id });
+    } catch (e){
+      // migration probably not run yet — not worth surfacing to the visitor
+    }
+  },
+
   async getFeatured(limit = 4){
     const all = await _fetchAllProducts();
     return all.filter(p => (p.category || "laptop") === "laptop").slice(0, limit);
@@ -131,6 +143,7 @@ const ProductsService = {
     switch (filters.sort){
       case "price_asc": results.sort((a,b) => a.price - b.price); break;
       case "price_desc": results.sort((a,b) => b.price - a.price); break;
+      case "popular": results.sort((a,b) => (b.view_count || 0) - (a.view_count || 0)); break;
       default: /* newest first */ break; // already ordered by created_at desc from Supabase
     }
 

@@ -32,6 +32,7 @@ function productCardHTML(p){
     <div class="card-body">
       <span class="card-brand">${escapeHTML(p.brand)}</span>
       <a href="product-details.html?id=${p.id}" class="card-name">${escapeHTML(p.name)}</a>
+      ${renderStars(p.rating, p.rating_count)}
       <div class="card-specs">${specs}</div>
       <div class="card-stock ${p.in_stock ? '' : 'out'}"><span class="dot"></span>${p.in_stock ? tr('stock.in') : tr('stock.out')}</div>
       <div class="card-footer">

@@ -110,3 +110,6 @@
   .main-nav a.active::after{display:none;}
   .nav-toggle{display:flex;}
 }
+
+.header-call-btn{color:var(--price);}
+.header-call-btn:hover{color:var(--price); border-color:var(--price);}

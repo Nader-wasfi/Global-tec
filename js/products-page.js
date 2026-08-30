@@ -48,6 +48,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         </label>`).join("")
     : `<span style="color:var(--text-faint); font-size:var(--fs-xs);">No screen sizes on file yet</span>`;
 
+  // price slider bounds — derived from whatever's actually in the catalog
+  const catalogPrices = allProductsForSizes.map(p => p.price).filter(n => typeof n === "number");
+  const priceFloor = catalogPrices.length ? Math.floor(Math.min(...catalogPrices) / 500) * 500 : 0;
+  const priceCeil = catalogPrices.length ? Math.ceil(Math.max(...catalogPrices) / 500) * 500 : 100000;
+  initPriceSlider(priceFloor, priceCeil, state.minPrice, state.maxPrice);
+
   // reflect category checkboxes
   document.querySelectorAll('input[name="category"]').forEach(cb => {
     cb.checked = state.category.includes(cb.value);
@@ -60,8 +66,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll('input[name="stock"]').forEach(cb => {
     cb.checked = state.stock.includes(cb.value);
   });
-  document.getElementById("minPrice").value = state.minPrice;
-  document.getElementById("maxPrice").value = state.maxPrice;
   document.getElementById("sortSelect").value = state.sort;
   document.getElementById("touchFilter").checked = state.touch;
   if (state.search) document.getElementById("headerSearch").value = state.search;
@@ -120,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("touchFilter").checked = false;
     }});
     if (filters.minPrice || filters.maxPrice) chips.push({ label: `${filters.minPrice || 0}–${filters.maxPrice || "∞"} EGP`, clear: () => {
-      document.getElementById("minPrice").value = ""; document.getElementById("maxPrice").value = "";
+      resetPriceSlider();
     }});
     if (filters.search) chips.push({ label: `"${filters.search}"`, clear: () => { state.search = ""; runQuery(); } });
 
@@ -141,10 +145,63 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderProductGrid("productsGrid", results);
   }
 
+  var resetPriceSlider = () => {};
+
+  function initPriceSlider(lo, hi, initialMin, initialMax){
+    const minInput = document.getElementById("priceRangeMin");
+    const maxInput = document.getElementById("priceRangeMax");
+    const rangeEl = document.getElementById("priceSliderRange");
+    const minLabel = document.getElementById("priceMinLabel");
+    const maxLabel = document.getElementById("priceMaxLabel");
+    const hiddenMin = document.getElementById("minPrice");
+    const hiddenMax = document.getElementById("maxPrice");
+
+    if (hi <= lo) hi = lo + 1000; // guard against a single-price catalog
+
+    [minInput, maxInput].forEach(el => { el.min = lo; el.max = hi; el.step = 500; });
+    minInput.value = initialMin !== "" ? initialMin : lo;
+    maxInput.value = initialMax !== "" ? initialMax : hi;
+
+    function paint(){
+      const pct = v => ((v - lo) / (hi - lo)) * 100;
+      const minVal = Number(minInput.value);
+      const maxVal = Number(maxInput.value);
+      rangeEl.style.left = pct(minVal) + "%";
+      rangeEl.style.right = (100 - pct(maxVal)) + "%";
+      minLabel.textContent = formatEGP(minVal);
+      maxLabel.textContent = formatEGP(maxVal);
+      hiddenMin.value = minVal <= lo ? "" : minVal;
+      hiddenMax.value = maxVal >= hi ? "" : maxVal;
+    }
+
+    minInput.addEventListener("input", () => {
+      if (Number(minInput.value) > Number(maxInput.value)) minInput.value = maxInput.value;
+      paint();
+    });
+    maxInput.addEventListener("input", () => {
+      if (Number(maxInput.value) < Number(minInput.value)) maxInput.value = minInput.value;
+      paint();
+    });
+    minInput.addEventListener("change", runQuery);
+    maxInput.addEventListener("change", runQuery);
+
+    resetPriceSlider = () => { minInput.value = lo; maxInput.value = hi; paint(); };
+
+    paint();
+  }
+
   document.getElementById("applyFilters").addEventListener("click", runQuery);
   document.getElementById("sortSelect").addEventListener("change", runQuery);
   document.getElementById("resetBrand").addEventListener("click", () => {
     document.querySelectorAll('input[name="brand"]').forEach(cb => cb.checked = false);
+    runQuery();
+  });
+  document.getElementById("clearAllFilters").addEventListener("click", () => {
+    document.querySelectorAll('.filters-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
+    resetPriceSlider();
+    document.getElementById("sortSelect").value = "newest";
+    state.search = "";
+    document.getElementById("headerSearch").value = "";
     runQuery();
   });
   // category checkboxes react instantly

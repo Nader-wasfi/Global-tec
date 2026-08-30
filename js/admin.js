@@ -143,6 +143,7 @@ async function loadProductList(){
       <span class="stock-cell">${p.in_stock ? "In Stock" : "Out of Stock"}</span>
       <div class="admin-row-actions">
         <button class="btn btn-ghost btn-sm" data-edit="${p.id}">Edit</button>
+        <button class="btn btn-ghost btn-sm" data-duplicate="${p.id}">Duplicate</button>
         <button class="btn btn-ghost btn-sm" data-delete="${p.id}">Delete</button>
       </div>
     </div>`).join("");
@@ -151,6 +152,12 @@ async function loadProductList(){
     btn.addEventListener("click", async () => {
       const product = await ProductsService.getById(btn.getAttribute("data-edit"));
       if (product) openModal(product);
+    });
+  });
+  rowsEl.querySelectorAll("[data-duplicate]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const product = await ProductsService.getById(btn.getAttribute("data-duplicate"));
+      if (product) openModal({ ...product, name: product.name + " (Copy)" }, true);
     });
   });
   rowsEl.querySelectorAll("[data-delete]").forEach(btn => {
@@ -175,18 +182,23 @@ async function loadReviewList(){
   });
 }
 
-function openModal(product){
-  editingId = product ? product.id : null;
+function openModal(product, isDuplicate){
+  const isNew = !product || isDuplicate;
+  editingId = isNew ? null : product.id;
   currentImages = product ? [...(product.image_gallery || [])] : [];
 
-  document.getElementById("modalTitle").textContent = product ? "Edit Product" : (currentTab === "laptop" ? "Add New Laptop" : "Add New Accessory");
-  document.getElementById("pId").value = product ? product.id : makeId();
+  document.getElementById("modalTitle").textContent = isNew
+    ? (currentTab === "laptop" ? "Add New Laptop" : "Add New Accessory")
+    : "Edit Product";
+  document.getElementById("pId").value = isNew ? makeId() : product.id;
   document.getElementById("pCategory").value = product ? (product.category || "laptop") : currentTab;
   document.getElementById("pName").value = product ? product.name : "";
   document.getElementById("pBrand").value = product ? product.brand : "";
   document.getElementById("pCondition").value = product ? product.condition : "used";
   document.getElementById("pPrice").value = product ? product.price : "";
   document.getElementById("pOldPrice").value = product && product.old_price != null ? product.old_price : "";
+  document.getElementById("pRating").value = product && product.rating != null ? product.rating : "";
+  document.getElementById("pRatingCount").value = product && product.rating_count != null ? product.rating_count : "";
   document.getElementById("pProcessor").value = product ? (product.processor || "") : "";
   document.getElementById("pRam").value = product ? (product.ram || "") : "";
   document.getElementById("pStorage").value = product ? (product.storage || "") : "";
@@ -271,6 +283,8 @@ async function saveProduct(e){
   }
 
   const oldPriceRaw = document.getElementById("pOldPrice").value;
+  const ratingRaw = document.getElementById("pRating").value;
+  const ratingCountRaw = document.getElementById("pRatingCount").value;
 
   const product = {
     id: document.getElementById("pId").value,
@@ -280,6 +294,8 @@ async function saveProduct(e){
     condition: document.getElementById("pCondition").value,
     price,
     old_price: oldPriceRaw === "" ? null : Number(oldPriceRaw),
+    rating: ratingRaw === "" ? null : Number(ratingRaw),
+    rating_count: ratingCountRaw === "" ? 0 : Number(ratingCountRaw),
     processor: document.getElementById("pProcessor").value.trim(),
     ram: document.getElementById("pRam").value.trim(),
     storage: document.getElementById("pStorage").value.trim(),

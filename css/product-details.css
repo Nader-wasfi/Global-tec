@@ -52,6 +52,10 @@
 .stock-line .dot{width:7px; height:7px; border-radius:50%; background:var(--price);}
 .stock-line.out .dot{background:var(--danger);}
 .stock-line.out{color:var(--danger);}
+.views-today-line{
+  font-family:var(--font-mono); font-size:var(--fs-xs);
+  color:var(--accent); margin:-8px 0 var(--sp-3);
+}
 .details-actions{display:flex; gap:10px; flex-wrap:wrap;}
 .details-actions #addFavoriteBtn{width:44px; flex:0 0 auto; padding:0;}
 .details-actions #addFavoriteBtn.active{background:var(--danger); color:#fff; border-color:var(--danger);}

@@ -5,6 +5,7 @@
 <script>(function(){try{
   var t=localStorage.getItem('globaltec_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');
 }catch(e){}})();</script>
+<script src="js/analytics.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title id="pageTitleTag">Product Details — Global Tech</title>
 <meta name="description" id="pageDescTag" content="Browse laptop details, specs, and pricing at Global Tech." />
@@ -83,8 +84,11 @@
   <div class="details-layout">
     <!-- Gallery -->
     <div>
-      <div class="gallery-main">
+      <div class="gallery-main" id="mainImageWrap">
         <img id="mainImage" src="" alt="" />
+        <span class="gallery-zoom-hint">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg>
+        </span>
       </div>
       <div class="gallery-thumbs" id="galleryThumbs"></div>
     </div>
@@ -129,6 +133,29 @@
         <div><span class="eyebrow">About</span><h2 style="font-size:var(--fs-lg);">Description</h2></div>
       </div>
       <p class="details-description" id="productDescription"></p>
+    </div>
+
+    <!-- Customer Reviews -->
+    <div style="margin-top:var(--sp-6);">
+      <div class="section-head" style="margin-bottom:var(--sp-3);">
+        <div><span class="eyebrow" data-i18n="reviews.eyebrow">Reviews</span><h2 style="font-size:var(--fs-lg);" data-i18n="reviews.title">Customer Reviews</h2></div>
+      </div>
+      <div id="productReviewsList" class="reviews-list"></div>
+
+      <form id="productReviewForm" class="review-form">
+        <h3 data-i18n="reviews.writeOne">Write a Review</h3>
+        <div class="star-picker" aria-label="Rating">
+          <button type="button" data-val="1" aria-label="1 star">★</button>
+          <button type="button" data-val="2" aria-label="2 stars">★</button>
+          <button type="button" data-val="3" aria-label="3 stars">★</button>
+          <button type="button" data-val="4" aria-label="4 stars">★</button>
+          <button type="button" data-val="5" aria-label="5 stars">★</button>
+        </div>
+        <input type="text" id="reviewName" placeholder="Your name" data-i18n-placeholder="reviews.namePlaceholder" required>
+        <textarea id="reviewComment" placeholder="What did you think? (optional)" data-i18n-placeholder="reviews.commentPlaceholder" rows="3"></textarea>
+        <button type="submit" class="btn btn-primary btn-sm" data-i18n="reviews.submit">Submit Review</button>
+        <div id="reviewFormStatus" class="review-form-status"></div>
+      </form>
     </div>
   </div>
 
@@ -197,8 +224,10 @@
 <script src="js/data/supabase-config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/services/products-service.js"></script>
+<script src="js/services/product-reviews-service.js"></script>
 <script src="js/components/compare-store.js"></script>
 <script src="js/components/favorites-store.js"></script>
+<script src="js/components/recently-viewed-store.js"></script>
 <script src="js/components/render-products.js"></script>
 <script src="js/components/shared-ui.js"></script>
 <script src="js/components/render-details.js"></script>

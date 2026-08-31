@@ -31,6 +31,19 @@
   background:var(--bg-elevated);
   box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
 }
+.hero-banner::before{
+  content:'';
+  position:absolute; inset:0;
+  border-radius:var(--radius-lg);
+  padding:1.5px;
+  background:linear-gradient(120deg, var(--accent), transparent 35%, transparent 65%, var(--accent));
+  opacity:0.5;
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;
+  z-index:2;
+}
 .hero-banner-track{
   display:flex;
   transition:transform .5s var(--ease);

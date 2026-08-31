@@ -54,3 +54,22 @@ function renderStars(rating, count){
   const countLabel = count ? ` <span class="rating-count">(${count})</span>` : "";
   return `<span class="star-rating">${starsHTML}${countLabel}</span>`;
 }
+
+/* Shows N skeleton placeholder cards in a product grid while data is
+   loading, so the page never looks empty/broken for a moment. Just call
+   renderProductGrid() as normal once the real data arrives — it replaces
+   the skeletons automatically. */
+function showSkeletonGrid(containerId, count){
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  count = count || 4;
+  el.innerHTML = Array.from({length: count}).map(() => `
+    <div class="product-card skeleton-card">
+      <div class="skeleton-block skeleton-media"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-block skeleton-line" style="width:40%;"></div>
+        <div class="skeleton-block skeleton-line" style="width:80%; height:16px;"></div>
+        <div class="skeleton-block skeleton-line" style="width:60%;"></div>
+      </div>
+    </div>`).join("");
+}

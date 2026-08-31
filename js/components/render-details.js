@@ -42,6 +42,10 @@ function renderProductDetails(p){
     thumbsEl.innerHTML = "";
   }
 
+  // click the main image (or the zoom hint) to open it full-size
+  const mediaWrap = document.getElementById("mainImageWrap");
+  if (mediaWrap) mediaWrap.onclick = () => openImageLightbox(mainImg.src, p.name);
+
   // badges
   const tr = typeof t === "function" ? t : (k => k);
   const badges = [];
@@ -52,9 +56,17 @@ function renderProductDetails(p){
   }
   document.getElementById("productBadges").innerHTML = badges.join("");
 
-  // star rating (only shows if the admin set one)
+  // star rating — prefers a real average from approved customer reviews,
+  // falls back to the admin's manually-entered rating if there are none yet
   const ratingEl = document.getElementById("productRating");
-  if (ratingEl) ratingEl.innerHTML = renderStars(p.rating, p.rating_count);
+  if (ratingEl && typeof ProductReviewsService !== "undefined"){
+    ProductReviewsService.getSummaryForProduct(p.id).then(summary => {
+      const r = summary || { rating: p.rating, count: p.rating_count };
+      ratingEl.innerHTML = renderStars(r.rating, r.count);
+    });
+  } else if (ratingEl){
+    ratingEl.innerHTML = renderStars(p.rating, p.rating_count);
+  }
 
   // price
   document.getElementById("productPrice").textContent = formatEGP(p.price);
@@ -63,8 +75,13 @@ function renderProductDetails(p){
   // stock
   const stockLine = document.getElementById("stockLine");
   if (p.in_stock){
-    stockLine.className = "stock-line";
-    stockLine.innerHTML = `<span class="dot"></span> ${tr("details.inStockShip")}`;
+    if (p.stock_quantity != null && p.stock_quantity <= 5){
+      stockLine.className = "stock-line low";
+      stockLine.innerHTML = `<span class="dot"></span> ${tr("details.onlyXLeft", {n: p.stock_quantity})}`;
+    } else {
+      stockLine.className = "stock-line";
+      stockLine.innerHTML = `<span class="dot"></span> ${tr("details.inStockShip")}`;
+    }
   } else {
     stockLine.className = "stock-line out";
     stockLine.innerHTML = `<span class="dot"></span> ${tr("details.outStock")}`;
@@ -104,7 +121,11 @@ function renderProductDetails(p){
       favBtn.querySelector("svg").setAttribute("fill", active ? "currentColor" : "none");
     };
     setFavState();
-    favBtn.onclick = () => { FavoritesStore.toggle(p.id); setFavState(); };
+    favBtn.onclick = () => {
+      FavoritesStore.toggle(p.id);
+      setFavState();
+      if (typeof ProductsService !== "undefined") ProductsService.adjustFavoriteCount(p.id, FavoritesStore.has(p.id) ? 1 : -1);
+    };
   }
 
   const contactBtn = document.getElementById("contactBtn");
@@ -166,6 +187,80 @@ function renderProductDetails(p){
 
   // fire-and-forget view counter (also powers "X people viewed today" above)
   if (typeof ProductsService !== "undefined") ProductsService.incrementView(p.id);
+
+  // remember this visit locally, for the "Recently Viewed" section elsewhere on the site
+  if (typeof RecentlyViewedStore !== "undefined") RecentlyViewedStore.add(p.id);
+
+  // customer reviews: list + submission form
+  initProductReviews(p);
+}
+
+function openImageLightbox(src, alt){
+  const overlay = document.createElement("div");
+  overlay.className = "image-lightbox";
+  overlay.innerHTML = `<img src="${src}" alt="${escapeHTML(alt || "")}">`;
+  overlay.addEventListener("click", () => overlay.remove());
+  document.addEventListener("keydown", function esc(e){
+    if (e.key === "Escape"){ overlay.remove(); document.removeEventListener("keydown", esc); }
+  });
+  document.body.appendChild(overlay);
+}
+
+async function initProductReviews(p){
+  const listEl = document.getElementById("productReviewsList");
+  const formEl = document.getElementById("productReviewForm");
+  if (!listEl || typeof ProductReviewsService === "undefined") return;
+
+  const tr = typeof t === "function" ? t : (k => k);
+  const reviews = await ProductReviewsService.getApprovedForProduct(p.id);
+
+  listEl.innerHTML = reviews.length
+    ? reviews.map(r => `
+        <div class="review-item">
+          <div class="review-item-head">
+            <strong>${escapeHTML(r.customer_name)}</strong>
+            ${renderStars(r.rating, null)}
+          </div>
+          ${r.comment ? `<p>${escapeHTML(r.comment)}</p>` : ""}
+        </div>`).join("")
+    : `<p class="no-reviews">${tr("reviews.none")}</p>`;
+
+  if (!formEl) return;
+  let chosenRating = 0;
+  const starPicker = formEl.querySelector(".star-picker");
+  const paintPicker = () => {
+    starPicker.querySelectorAll("button").forEach(btn => {
+      btn.classList.toggle("filled", Number(btn.dataset.val) <= chosenRating);
+    });
+  };
+  starPicker.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => { chosenRating = Number(btn.dataset.val); paintPicker(); });
+  });
+
+  formEl.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nameInput = document.getElementById("reviewName");
+    const commentInput = document.getElementById("reviewComment");
+    const statusEl = document.getElementById("reviewFormStatus");
+
+    if (!chosenRating || !nameInput.value.trim()){
+      statusEl.textContent = tr("reviews.needRatingAndName");
+      statusEl.className = "review-form-status error";
+      return;
+    }
+
+    try {
+      await ProductReviewsService.submit(p.id, nameInput.value.trim(), chosenRating, commentInput.value.trim());
+      statusEl.textContent = tr("reviews.submitted");
+      statusEl.className = "review-form-status success";
+      formEl.reset();
+      chosenRating = 0;
+      paintPicker();
+    } catch (err){
+      statusEl.textContent = tr("reviews.submitFailed");
+      statusEl.className = "review-form-status error";
+    }
+  });
 }
 
 function injectProductSchema(p){

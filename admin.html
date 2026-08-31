@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <script>(function(){try{var t=localStorage.getItem('globaltec_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<script src="js/analytics.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin — Global Tech </title>
 <meta name="robots" content="noindex, nofollow">
@@ -53,7 +54,9 @@
       <div class="admin-tabs" id="adminTabs">
         <button class="admin-tab active" data-tab="laptop">Laptops</button>
         <button class="admin-tab" data-tab="accessory">Accessories</button>
-        <button class="admin-tab" data-tab="reviews">Reviews</button>
+        <button class="admin-tab" data-tab="reviews">Homepage Reviews</button>
+        <button class="admin-tab" data-tab="productReviews">Product Reviews</button>
+        <button class="admin-tab" data-tab="stats">Stats</button>
       </div>
 
       <!-- ---- Laptops / Accessories panel ---- -->
@@ -95,6 +98,37 @@
             <input type="file" id="reviewInput" accept="image/*" multiple style="display:none;">
           </div>
           <div class="image-thumbs" id="reviewThumbs"></div>
+        </div>
+      </div>
+
+      <!-- ---- Product Reviews moderation panel ---- -->
+      <div id="productReviewsPanel" style="display:none;">
+        <div class="admin-toolbar">
+          <div>
+            <h1>Product Reviews</h1>
+            <span class="count" id="productReviewCount">— items</span>
+          </div>
+        </div>
+        <p style="color:var(--text-dim); font-size:var(--fs-sm); margin-bottom:var(--sp-4);">
+          Reviews customers submit from a product page land here first — approve the ones you want to show publicly.
+        </p>
+        <div id="productReviewsModQueue"></div>
+      </div>
+
+      <!-- ---- Stats panel ---- -->
+      <div id="statsPanel" style="display:none;">
+        <div class="admin-toolbar">
+          <div><h1>Stats</h1></div>
+        </div>
+        <div class="stats-columns">
+          <div>
+            <h3>Most Viewed</h3>
+            <div id="statsMostViewed"></div>
+          </div>
+          <div>
+            <h3>Most Favorited</h3>
+            <div id="statsMostFavorited"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -183,6 +217,10 @@
         <input type="checkbox" id="pInStock" checked>
         <label for="pInStock">In stock</label>
       </div>
+      <div class="field full">
+        <label for="pStockQuantity">Stock Left (optional — shows "Only X left!" when 5 or fewer)</label>
+        <input type="number" id="pStockQuantity" placeholder="Leave blank to just show &quot;In Stock&quot;" min="0" step="1">
+      </div>
 
       <div class="image-uploader">
         <label>Photos</label>
@@ -206,6 +244,7 @@
 <script src="js/utils.js"></script>
 <script src="js/services/products-service.js"></script>
 <script src="js/services/reviews-service.js"></script>
+<script src="js/services/product-reviews-service.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

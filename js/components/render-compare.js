@@ -23,6 +23,7 @@ function renderCompareTable(products){
 
   if (!products.length){
     root.innerHTML = `<div class="compare-empty">
+      <svg class="empty-state-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6.3 6.3l2 2M15.7 15.7l2 2M6.3 17.7l2-2M15.7 8.3l2-2" stroke-dasharray="2 2"/></svg>
       <h3>${tr("compare.emptyTitle")}</h3>
       <p>${tr("compare.emptyText")}</p>
     </div>`;
@@ -42,10 +43,13 @@ function renderCompareTable(products){
     </th>`).join("");
 
   const bodyRows = COMPARE_ROWS.map(row => {
-    const cells = products.map(p => {
-      const raw = row.fmt ? row.fmt(p) : p[row.key];
+    const values = products.map(p => row.fmt ? row.fmt(p) : p[row.key]);
+    const allSame = products.length > 1 && values.every(v => String(v ?? "—") === String(values[0] ?? "—"));
+    const cells = products.map((p, i) => {
+      const raw = values[i];
       const isBest = row.key === "price" && p.price === cheapestPrice && products.length > 1;
-      return `<td>${isBest ? `<span class="cell-best">${escapeHTML(String(raw ?? "—"))}</span>` : escapeHTML(String(raw ?? "—"))}</td>`;
+      const diffClass = !allSame && products.length > 1 ? " class=\"cell-diff\"" : "";
+      return `<td${diffClass}>${isBest ? `<span class="cell-best">${escapeHTML(String(raw ?? "—"))}</span>` : escapeHTML(String(raw ?? "—"))}</td>`;
     }).join("");
     return `<tr><td>${row.label}</td>${cells}</tr>`;
   }).join("");

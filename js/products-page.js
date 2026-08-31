@@ -5,6 +5,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
 
+  showSkeletonGrid("productsGrid", 8);
+
   const tr = typeof t === "function" ? t : (k => k);
 
   const state = {
@@ -203,6 +205,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.search = "";
     document.getElementById("headerSearch").value = "";
     runQuery();
+  });
+
+  // ---- density toggle (compact / comfortable), remembered per visitor ----
+  const grid = document.getElementById("productsGrid");
+  const densityBtns = document.querySelectorAll("#densityToggle button");
+  const savedDensity = localStorage.getItem("globaltec_density") || "comfortable";
+  grid.classList.toggle("compact", savedDensity === "compact");
+  densityBtns.forEach(btn => btn.classList.toggle("active", btn.dataset.density === savedDensity));
+  densityBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const density = btn.dataset.density;
+      grid.classList.toggle("compact", density === "compact");
+      densityBtns.forEach(b => b.classList.toggle("active", b === btn));
+      localStorage.setItem("globaltec_density", density);
+    });
   });
   // category checkboxes react instantly
   document.querySelectorAll('input[name="category"]').forEach(cb => cb.addEventListener("change", runQuery));

@@ -53,16 +53,28 @@ document.addEventListener("DOMContentLoaded", () => {
     await supabaseClient.auth.signOut();
   });
 
-  // ---- tabs: Laptops / Accessories / Reviews ----
+  // ---- tabs: Laptops / Accessories / Homepage Reviews / Product Reviews / Stats ----
   document.querySelectorAll(".admin-tab").forEach(btn => {
     btn.addEventListener("click", () => {
       currentTab = btn.getAttribute("data-tab");
       document.querySelectorAll(".admin-tab").forEach(b => b.classList.toggle("active", b === btn));
-      const isReviews = currentTab === "reviews";
-      document.getElementById("productsPanel").style.display = isReviews ? "none" : "";
-      document.getElementById("reviewsPanel").style.display = isReviews ? "" : "none";
-      if (isReviews){
+
+      const panels = {
+        laptop: "productsPanel", accessory: "productsPanel",
+        reviews: "reviewsPanel", productReviews: "productReviewsPanel", stats: "statsPanel"
+      };
+      Object.values(panels).forEach((id, i, arr) => {
+        // avoid hiding/showing the same panel id twice when laptop/accessory share it
+        if (arr.indexOf(id) === i) document.getElementById(id).style.display = "none";
+      });
+      document.getElementById(panels[currentTab]).style.display = "";
+
+      if (currentTab === "reviews"){
         loadReviewList();
+      } else if (currentTab === "productReviews"){
+        loadProductReviewsModeration();
+      } else if (currentTab === "stats"){
+        loadStats();
       } else {
         document.getElementById("productsPanelTitle").textContent = currentTab === "laptop" ? "Laptops" : "Accessories";
         loadProductList();
@@ -206,6 +218,7 @@ function openModal(product, isDuplicate){
   document.getElementById("pScreen").value = product ? (product.screen || "") : "";
   document.getElementById("pDescription").value = product ? (product.description || "") : "";
   document.getElementById("pInStock").checked = product ? !!product.in_stock : true;
+  document.getElementById("pStockQuantity").value = product && product.stock_quantity != null ? product.stock_quantity : "";
   document.getElementById("formError").classList.remove("show");
 
   renderImageThumbs();
@@ -304,7 +317,8 @@ async function saveProduct(e){
     description: document.getElementById("pDescription").value.trim(),
     image_url: currentImages[0] || "",
     image_gallery: currentImages,
-    in_stock: document.getElementById("pInStock").checked
+    in_stock: document.getElementById("pInStock").checked,
+    stock_quantity: document.getElementById("pStockQuantity").value === "" ? null : Number(document.getElementById("pStockQuantity").value)
   };
 
   const saveBtn = document.getElementById("saveProductBtn");
@@ -379,6 +393,77 @@ async function deleteReview(id){
     return;
   }
   loadReviewList();
+}
+
+/* ---- Product Reviews moderation (real customer star ratings) ---- */
+async function loadProductReviewsModeration(){
+  if (typeof ProductReviewsService === "undefined") return;
+  const [reviews, products] = await Promise.all([
+    ProductReviewsService.getAllForAdmin(),
+    ProductsService.getAll()
+  ]);
+  const productNames = {};
+  products.forEach(p => { productNames[p.id] = p.name; });
+
+  document.getElementById("productReviewCount").textContent = `${reviews.length} item${reviews.length === 1 ? "" : "s"}`;
+  const wrap = document.getElementById("productReviewsModQueue");
+
+  if (!reviews.length){
+    wrap.innerHTML = `<div class="admin-empty">No reviews submitted yet.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = reviews.map(r => `
+    <div class="review-mod-card ${r.approved ? "approved" : "pending"}" data-id="${r.id}">
+      <div class="review-mod-head">
+        <strong>${escapeHTML(r.customer_name)}</strong>
+        <span class="stars-plain">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span>
+        <span class="review-mod-product">${escapeHTML(productNames[r.product_id] || r.product_id)}</span>
+        <span class="review-mod-status">${r.approved ? "Approved" : "Pending"}</span>
+      </div>
+      ${r.comment ? `<p>${escapeHTML(r.comment)}</p>` : ""}
+      <div class="admin-row-actions">
+        ${!r.approved ? `<button class="btn btn-primary btn-sm" data-approve="${r.id}">Approve</button>` : ""}
+        <button class="btn btn-ghost btn-sm" data-delete-review="${r.id}">Delete</button>
+      </div>
+    </div>`).join("");
+
+  wrap.querySelectorAll("[data-approve]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      await ProductReviewsService.approve(btn.getAttribute("data-approve"));
+      loadProductReviewsModeration();
+    });
+  });
+  wrap.querySelectorAll("[data-delete-review]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("Delete this review?")) return;
+      await ProductReviewsService.remove(btn.getAttribute("data-delete-review"));
+      loadProductReviewsModeration();
+    });
+  });
+}
+
+/* ---- Stats ---- */
+async function loadStats(){
+  ProductsService.invalidateCache();
+  const products = await ProductsService.getAll();
+
+  const byViews = [...products].sort((a, b) => (b.view_count || 0) - (a.view_count || 0)).slice(0, 8);
+  const byFavs = [...products].sort((a, b) => (b.favorite_count || 0) - (a.favorite_count || 0)).slice(0, 8);
+
+  const renderList = (items, countKey, emptyMsg) => {
+    const withCounts = items.filter(p => (p[countKey] || 0) > 0);
+    if (!withCounts.length) return `<div class="admin-empty">${emptyMsg}</div>`;
+    return withCounts.map(p => `
+      <div class="stats-row">
+        <img src="${p.image_url || 'https://placehold.co/60x60/151923/5B6272?text=—'}" alt="">
+        <span class="name">${escapeHTML(p.name)}</span>
+        <span class="stat-value">${p[countKey] || 0}</span>
+      </div>`).join("");
+  };
+
+  document.getElementById("statsMostViewed").innerHTML = renderList(byViews, "view_count", "No views tracked yet.");
+  document.getElementById("statsMostFavorited").innerHTML = renderList(byFavs, "favorite_count", "No favorites tracked yet.");
 }
 
 function escapeHTML(str){

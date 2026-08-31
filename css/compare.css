@@ -36,12 +36,14 @@
 .compare-col-name{font-family:var(--font-display); font-weight:600; font-size:var(--fs-base); margin-bottom:6px; line-height:1.3;}
 .compare-col-price{font-size:var(--fs-lg); display:block; margin-bottom:8px;}
 .compare-table td .cell-best{color:var(--price); font-weight:700;}
+.compare-table td.cell-diff{background:var(--accent-glow); border-radius:6px;}
 
 .compare-empty{
   text-align:center; padding:var(--sp-7) var(--sp-4);
   border:1px dashed var(--border); border-radius:var(--radius-lg);
   color:var(--text-dim);
 }
+.compare-empty .empty-state-icon{color:var(--accent); opacity:0.55; margin-bottom:var(--sp-3);}
 .compare-empty h3{color:var(--text); font-size:var(--fs-lg); margin-bottom:8px;}
 
 .compare-picker{margin-top:var(--sp-7); padding-top:var(--sp-6); border-top:1px solid var(--border-soft);}

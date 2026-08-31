@@ -5,6 +5,7 @@
 <script>(function(){try{
   var t=localStorage.getItem('globaltec_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');
 }catch(e){}})();</script>
+<script src="js/analytics.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>All Laptops — Global Tech</title>
 <meta name="description" content="Browse quality used laptops at Global Tech, Cairo. Filter by brand, price, condition, and touch screen." />
@@ -175,6 +176,14 @@
             <option value="price_asc" data-i18n="products.sortPriceAsc">Price: Low to High</option>
             <option value="price_desc" data-i18n="products.sortPriceDesc">Price: High to Low</option>
           </select>
+          <div class="density-toggle" id="densityToggle">
+            <button type="button" data-density="comfortable" class="active" title="Comfortable view" data-i18n-title="products.comfortable" aria-label="Comfortable view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="7"/><rect x="14" y="4" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </button>
+            <button type="button" data-density="compact" title="Compact view" data-i18n-title="products.compact" aria-label="Compact view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="4" height="4"/><rect x="10" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="10" width="4" height="4"/><rect x="10" y="10" width="4" height="4"/><rect x="17" y="10" width="4" height="4"/><rect x="3" y="17" width="4" height="4"/><rect x="10" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/></svg>
+            </button>
+          </div>
         </div>
       </div>
 

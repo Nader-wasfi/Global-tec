@@ -59,6 +59,18 @@ const ProductsService = {
     }
   },
 
+  /* Fire-and-forget favorite counter — lets the admin Stats tab show
+     "most favorited" even though the favorites list itself lives in each
+     visitor's own browser. delta is +1 (added) or -1 (removed). */
+  async adjustFavoriteCount(id, delta){
+    if (typeof supabaseClient === "undefined") return;
+    try {
+      await supabaseClient.rpc("adjust_favorite_count", { p_id: id, p_delta: delta });
+    } catch (e){
+      // migration probably not run yet — not worth surfacing to the visitor
+    }
+  },
+
   async getFeatured(limit = 4){
     const all = await _fetchAllProducts();
     return all.filter(p => (p.category || "laptop") === "laptop").slice(0, limit);

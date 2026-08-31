@@ -11,9 +11,9 @@
   --text-dim:      #9AA3B2;
   --text-faint:    #5B6272;
 
-  --accent:        #4FE3C1;   /* cyan-mint — primary interactive accent */
-  --accent-dim:    #2E7B6C;
-  --accent-glow:   rgba(79,227,193,0.16);
+  --accent:        #58E38A;   /* cyan-blue — primary interactive accent, tuned toward the logo's icy blue */
+  --accent-dim:    #2B7A7A;
+  --accent-glow:   rgba(70,214,214,0.16);
 
   --amber:         #F2B84B;   /* used / sale marker */
   --price:         #58E38A;   /* terminal green for prices */
@@ -66,14 +66,14 @@
 
   --text:          #12151C;
   --text-dim:      #5A6272;
-  --text-faint:    #8B92A0;
+  --text-faint:    #646B7A;
 
-  --accent:        #0EA98C;
-  --accent-dim:    #0B7C66;
-  --accent-glow:   rgba(14,169,140,0.10);
+  --accent:        #0B96A6;
+  --accent-dim:    #086F7A;
+  --accent-glow:   rgba(11,150,166,0.10);
 
   --amber:         #A6690A;
-  --price:         #0E9D5A;
+  --price:         #0B96A6;
   --danger:        #D6473E;
 
   --focus-ring:    0 0 0 3px rgba(14,169,140,0.3);

@@ -100,6 +100,7 @@ function bindFavoriteToggles(scope){
       const active = FavoritesStore.has(id);
       btn.classList.toggle("active", active);
       btn.querySelector("svg").setAttribute("fill", active ? "currentColor" : "none");
+      if (typeof ProductsService !== "undefined") ProductsService.adjustFavoriteCount(id, active ? 1 : -1);
     });
   });
 }

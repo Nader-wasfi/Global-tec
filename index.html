@@ -5,6 +5,7 @@
 <script>(function(){try{
   var t=localStorage.getItem('globaltec_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');
 }catch(e){}})();</script>
+<script src="js/analytics.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Global Tech</title>
 <meta name="description" content="Global Tech is your source for quality used laptops in Cairo, Egypt — real specs, honest pricing, a 3-month warranty, and side-by-side comparisons." />
@@ -125,6 +126,19 @@
   </div>
 </section>
 
+<!-- ============ RECENTLY VIEWED (hidden until the visitor has viewed something) ============ -->
+<section class="section" id="recentlyViewedSection" style="display:none; padding-top:0;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow" data-i18n="recentlyViewed.title">Recently Viewed</span>
+        <h2 data-i18n="recentlyViewed.title">Recently Viewed</h2>
+      </div>
+    </div>
+    <div class="product-grid" id="recentlyViewedGrid"></div>
+  </div>
+</section>
+
 <!-- ============ USED LAPTOPS ============ -->
 <section class="section" style="padding-top:0;">
   <div class="container">
@@ -211,6 +225,7 @@
 <script src="js/services/reviews-service.js"></script>
 <script src="js/components/compare-store.js"></script>
 <script src="js/components/favorites-store.js"></script>
+<script src="js/components/recently-viewed-store.js"></script>
 <script src="js/components/render-products.js"></script>
 <script src="js/components/shared-ui.js"></script>
 <script src="js/components/render-reviews.js"></script>

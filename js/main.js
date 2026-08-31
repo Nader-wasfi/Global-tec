@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function loadHomeContent(){
   // ---- product rails ----
+  showSkeletonGrid("featuredGrid", 4);
+  showSkeletonGrid("usedGrid", 4);
   ProductsService.getFeatured(4).then(products => renderProductGrid("featuredGrid", products));
   ProductsService.getByCondition("used", 4).then(products => renderProductGrid("usedGrid", products));
 
@@ -59,6 +61,24 @@ function loadHomeContent(){
 
   // ---- why buy from us ----
   renderTrustGrid();
+
+  // ---- recently viewed (per visitor, from localStorage) ----
+  loadRecentlyViewed();
+}
+
+async function loadRecentlyViewed(){
+  const section = document.getElementById("recentlyViewedSection");
+  if (!section || typeof RecentlyViewedStore === "undefined") return;
+
+  const ids = RecentlyViewedStore.getIds();
+  if (!ids.length) return;
+
+  const all = await ProductsService.getAll();
+  const items = ids.map(id => all.find(p => p.id === id)).filter(Boolean);
+  if (!items.length) return;
+
+  renderProductGrid("recentlyViewedGrid", items);
+  section.style.display = "";
 }
 
 function renderTrustGrid(){

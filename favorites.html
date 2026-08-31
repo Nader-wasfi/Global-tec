@@ -5,6 +5,7 @@
 <script>(function(){try{
   var t=localStorage.getItem('globaltec_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');
 }catch(e){}})();</script>
+<script src="js/analytics.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Favorites — Global Tech</title>
 <meta name="description" content="Laptops you've saved for later at Global Tech, Cairo." />
@@ -81,6 +82,7 @@
   <div class="product-grid" id="favoritesGrid"></div>
 
   <div class="compare-empty" id="favoritesEmpty" style="display:none;">
+    <svg class="empty-state-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" stroke-dasharray="3 2"/></svg>
     <h3 data-i18n="favorites.emptyTitle">No favorites yet</h3>
     <p data-i18n="favorites.emptyText">Tap the heart icon on any laptop to save it here.</p>
     <a href="products.html" class="btn btn-primary btn-sm" style="margin-top:var(--sp-4); display:inline-flex;" data-i18n="favorites.browse">Browse Laptops</a>

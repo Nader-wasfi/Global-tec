@@ -135,8 +135,7 @@ function renderProductDetails(p){
     `${p.name}\n` +
     (specsLine ? `${specsLine}\n` : "") +
     `Price: ${formatEGP(p.price)}\n` +
-    `Condition: ${p.condition === "new" ? "New" : "Used"}\n\n` +
-    `${window.location.href}`
+    `Condition: ${p.condition === "new" ? "New" : "Used"}\n` 
   );
   contactBtn.href = `https://wa.me/${SITE_INFO.whatsappNumber}?text=${orderMsg}`;
   contactBtn.target = "_blank";

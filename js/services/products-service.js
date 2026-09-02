@@ -130,6 +130,12 @@ const ProductsService = {
     if (filters.screenSize && filters.screenSize.length){
       results = results.filter(p => filters.screenSize.includes(extractScreenSize(p.screen)));
     }
+    if (filters.useCase && filters.useCase.length){
+      results = results.filter(p => {
+        const tags = deriveUseCases(p);
+        return filters.useCase.some(tag => tags.includes(tag));
+      });
+    }
     if (filters.stock && filters.stock.length === 1){
       const wantIn = filters.stock[0] === "in";
       results = results.filter(p => p.in_stock === wantIn);

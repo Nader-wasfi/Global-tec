@@ -181,6 +181,30 @@ function renderProductDetails(p){
 
   document.getElementById("productDescription").textContent = p.description || tr("details.noDescription");
 
+  // "Great For" — automatically derived from specs, no admin input needed.
+  // Shows the top 1-2 use cases so it stays focused rather than listing everything.
+  const greatForEl = document.getElementById("productGreatFor");
+  if (greatForEl){
+    const tags = deriveUseCases(p).slice(0, 2);
+    if (tags.length){
+      greatForEl.innerHTML = `
+        <h3 class="great-for-title">${tr("details.greatFor")}</h3>
+        <div class="great-for-list">
+          ${tags.map(key => `
+            <div class="great-for-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+              <div>
+                <strong>${USE_CASES[key].label}</strong>
+                <p>${USE_CASES[key].reason}</p>
+              </div>
+            </div>`).join("")}
+        </div>`;
+      greatForEl.style.display = "";
+    } else {
+      greatForEl.style.display = "none";
+    }
+  }
+
   // Google-friendly structured data — helps the product show price/availability/rating in search results
   injectProductSchema(p);
 

@@ -40,6 +40,78 @@ function extractScreenSize(screenText){
   return match ? match[1] : null;
 }
 
+/* ==========================================================================
+   USE-CASE CLASSIFIER — automatically figures out what a laptop is good
+   for, purely from its specs (RAM / processor / GPU / storage text).
+   No admin data entry needed: add a laptop with specs filled in and it's
+   tagged automatically, everywhere (product card, product page, filters,
+   and the Laptop Finder quiz).
+   ========================================================================== */
+
+const USE_CASES = {
+  office:      { label: "Everyday Use & Browsing", reason: "Handles browsing, email, and everyday office work smoothly." },
+  study:       { label: "Studying",                reason: "Comfortable for note-taking, research, and video calls." },
+  programming: { label: "Programming & Dev Work",   reason: "Enough power for an IDE, local servers, and multiple tabs at once." },
+  gaming:      { label: "Gaming",                   reason: "Has a dedicated graphics card, so current games are playable." },
+  creative:    { label: "Photo & Video Editing",    reason: "Strong enough CPU/GPU and RAM for editing photos and video." },
+  heavy:       { label: "Heavy Multitasking & Pro Work", reason: "Built to handle demanding, professional-grade workloads." }
+};
+
+function extractRamGB(ramText){
+  if (!ramText) return null;
+  const match = String(ramText).match(/(\d+)\s*GB/i);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function extractStorageGB(storageText){
+  if (!storageText) return null;
+  const match = String(storageText).match(/(\d+)\s*(GB|TB)/i);
+  if (!match) return null;
+  const num = parseInt(match[1], 10);
+  return match[2].toUpperCase() === "TB" ? num * 1000 : num;
+}
+
+function cpuTierOf(processorText){
+  const s = String(processorText || "").toLowerCase();
+  if (/i9|ryzen 9|m3 max|m3 pro|m2 max|m2 pro|xeon/.test(s)) return "high";
+  if (/i7|ryzen 7|m3\b|m2\b/.test(s)) return "upper-mid";
+  if (/i5|ryzen 5|m1\b/.test(s)) return "mid";
+  if (/i3|ryzen 3|celeron|pentium|athlon/.test(s)) return "low";
+  return "mid"; // unknown processor text — assume a safe middle tier
+}
+
+function hasDedicatedGPU(gpuText){
+  return /rtx|gtx|radeon rx|quadro|arc a\d|mx\d/i.test(String(gpuText || ""));
+}
+
+/* Returns an array of use-case keys (from USE_CASES) this product suits,
+   ordered strongest-first. Works for any product with specs filled in —
+   nothing to configure per-product. */
+function deriveUseCases(p){
+  if (!p || (p.category && p.category !== "laptop")) return [];
+
+  const ramGB = extractRamGB(p.ram) || 8;
+  const tier = cpuTierOf(p.processor);
+  const dedicatedGPU = hasDedicatedGPU(p.gpu);
+  const tags = [];
+
+  if (ramGB >= 16 && (tier === "upper-mid" || tier === "high")) tags.push("heavy");
+  if ((dedicatedGPU || tier === "upper-mid" || tier === "high") && ramGB >= 16) tags.push("creative");
+  if (dedicatedGPU && ramGB >= 8) tags.push("gaming");
+  if (ramGB >= 8 && tier !== "low") tags.push("programming");
+  if (ramGB >= 8) tags.push("study");
+  if (!(tier === "low" && ramGB < 8)) tags.push("office"); // nearly everything covers basic office use
+
+  return tags;
+}
+
+/* Picks the single most impressive tag, for a compact badge on product cards. */
+function primaryUseCase(p){
+  const order = ["heavy", "creative", "gaming", "programming", "study", "office"];
+  const tags = deriveUseCases(p);
+  return order.find(t => tags.includes(t)) || null;
+}
+
 /* Renders a compact star rating, e.g. ★★★★☆ (12). Returns "" if no rating is set,
    so callers can just drop the result in without an extra if-check. */
 function renderStars(rating, count){

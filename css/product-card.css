@@ -95,6 +95,15 @@
   color:var(--text-faint);
   margin-left:2px;
 }
+.badge-best-for{
+  align-self:flex-start;
+  font-size:10px; font-weight:600;
+  color:var(--accent);
+  background:var(--accent-glow);
+  border-radius:4px;
+  padding:2px 7px;
+  text-transform:uppercase; letter-spacing:0.03em;
+}
 .card-name{
   font-family:var(--font-display);
   font-size:var(--fs-base);

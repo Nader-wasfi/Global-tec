@@ -1,0 +1,59 @@
+/* ==========================================================================
+   LAPTOP FINDER — quiz wizard styling
+   ========================================================================== */
+
+.finder-wrap{max-width:760px;}
+
+.finder-progress{margin-bottom:var(--sp-6);}
+.finder-progress-bar{
+  height:4px; background:var(--border-soft); border-radius:2px; overflow:hidden;
+}
+.finder-progress-fill{
+  height:100%; background:var(--accent);
+  transition:width .3s var(--ease);
+}
+.finder-progress-label{
+  display:block; margin-top:8px;
+  font-family:var(--font-mono); font-size:var(--fs-xs); color:var(--text-faint);
+}
+
+.finder-step{display:none; animation:finder-fade .25s var(--ease);}
+.finder-step.active{display:block;}
+@keyframes finder-fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.finder-step h2{font-size:var(--fs-xl); margin-bottom:var(--sp-5);}
+
+.finder-options{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:12px;
+}
+.finder-options button{
+  text-align:left;
+  padding:var(--sp-4);
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-md);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:var(--fs-sm);
+  font-weight:600;
+  transition:all .15s var(--ease);
+}
+.finder-options button:hover{border-color:var(--accent-dim);}
+.finder-options button.selected{
+  border-color:var(--accent);
+  background:var(--accent-glow);
+  color:var(--accent);
+}
+
+.finder-nav{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:var(--sp-6);
+}
+
+.finder-results{margin-top:var(--sp-4);}
+
+@media (max-width: 560px){
+  .finder-options{grid-template-columns:1fr;}
+}

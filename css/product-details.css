@@ -151,3 +151,15 @@
 .review-form-status{font-size:var(--fs-xs); min-height:1em;}
 .review-form-status.success{color:var(--price);}
 .review-form-status.error{color:var(--danger);}
+
+/* ---- Great For (auto-derived use cases) ---- */
+.great-for-title{font-size:var(--fs-lg); margin-bottom:var(--sp-3);}
+.great-for-list{display:flex; flex-direction:column; gap:10px;}
+.great-for-item{
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--surface); border:1px solid var(--border-soft);
+  border-radius:var(--radius-sm); padding:var(--sp-3);
+}
+.great-for-item svg{color:var(--accent); flex-shrink:0; margin-top:2px;}
+.great-for-item strong{display:block; font-size:var(--fs-sm); margin-bottom:2px;}
+.great-for-item p{color:var(--text-dim); font-size:var(--fs-xs); line-height:1.5;}

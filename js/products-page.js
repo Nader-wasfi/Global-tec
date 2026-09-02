@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ram: params.getAll("ram").length ? params.getAll("ram") : (params.get("ram") ? [params.get("ram")] : []),
     storage: params.getAll("storage").length ? params.getAll("storage") : (params.get("storage") ? [params.get("storage")] : []),
     screenSize: params.getAll("screen").length ? params.getAll("screen") : (params.get("screen") ? [params.get("screen")] : []),
+    useCase: params.getAll("use").length ? params.getAll("use") : (params.get("use") ? [params.get("use")] : []),
     stock: params.getAll("stock").length ? params.getAll("stock") : (params.get("stock") ? [params.get("stock")] : []),
     touch: params.get("touch") === "1",
     minPrice: params.get("min") || "",
@@ -64,6 +65,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll('input[name="condition"]').forEach(cb => {
     cb.checked = state.condition.includes(cb.value);
   });
+  // reflect use-case checkboxes
+  document.querySelectorAll('input[name="useCase"]').forEach(cb => {
+    cb.checked = state.useCase.includes(cb.value);
+  });
   // reflect stock checkboxes
   document.querySelectorAll('input[name="stock"]').forEach(cb => {
     cb.checked = state.stock.includes(cb.value);
@@ -80,6 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       ram: Array.from(document.querySelectorAll('input[name="ram"]:checked')).map(el => el.value),
       storage: Array.from(document.querySelectorAll('input[name="storage"]:checked')).map(el => el.value),
       screenSize: Array.from(document.querySelectorAll('input[name="screenSize"]:checked')).map(el => el.value),
+      useCase: Array.from(document.querySelectorAll('input[name="useCase"]:checked')).map(el => el.value),
       stock: Array.from(document.querySelectorAll('input[name="stock"]:checked')).map(el => el.value),
       touch: document.getElementById("touchFilter").checked,
       minPrice: document.getElementById("minPrice").value,
@@ -118,6 +124,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }}));
     filters.screenSize.forEach(sz => chips.push({ label: `${sz}"`, clear: () => {
       document.querySelector(`input[name="screenSize"][value="${sz}"]`).checked = false;
+    }}));
+    filters.useCase.forEach(uc => chips.push({ label: USE_CASES[uc] ? USE_CASES[uc].label : uc, clear: () => {
+      document.querySelector(`input[name="useCase"][value="${uc}"]`).checked = false;
     }}));
     filters.stock.forEach(s => chips.push({ label: s === "in" ? tr("products.inStock") : tr("products.outStock"), clear: () => {
       document.querySelector(`input[name="stock"][value="${s}"]`).checked = false;
@@ -231,6 +240,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll('input[name="ram"]').forEach(cb => cb.addEventListener("change", runQuery));
   document.querySelectorAll('input[name="storage"]').forEach(cb => cb.addEventListener("change", runQuery));
   document.querySelectorAll('input[name="screenSize"]').forEach(cb => cb.addEventListener("change", runQuery));
+  document.querySelectorAll('input[name="useCase"]').forEach(cb => cb.addEventListener("change", runQuery));
   // touch filter reacts instantly
   document.getElementById("touchFilter").addEventListener("change", runQuery);
 

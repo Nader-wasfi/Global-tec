@@ -7,10 +7,10 @@
 }catch(e){}})();</script>
 <script src="js/analytics.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sell Your Laptop — Global Tech</title>
-<meta name="description" content="Sell or trade in your laptop to Global Tech — tell us the specs and we'll send you an offer on WhatsApp." />
-<meta property="og:title" content="Sell Your Laptop — Global Tech" />
-<meta property="og:description" content="Tell us about your laptop and we'll send you an offer on WhatsApp." />
+<title>Laptop Finder — Global Tech</title>
+<meta name="description" content="Answer a few quick questions and Global Tech will recommend the laptops that actually fit what you need." />
+<meta property="og:title" content="Laptop Finder — Global Tech" />
+<meta property="og:description" content="Tell us what you'll use it for and we'll recommend the best matches from our catalog." />
 <meta property="og:type" content="website" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +21,8 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/header.css">
 <link rel="stylesheet" href="css/policy.css">
+<link rel="stylesheet" href="css/product-card.css">
+<link rel="stylesheet" href="css/finder.css">
 <link rel="stylesheet" href="css/footer.css">
 </head>
 <body>
@@ -42,7 +44,7 @@
       <a href="products.html"><span data-i18n="nav.allLaptops">All Laptops</span></a>
       <a href="products.html?condition=used"><span data-i18n="nav.used">Used</span></a>
       <a href="compare.html"><span data-i18n="nav.compare">Compare</span></a>
-      <a href="trade-in.html" class="active"><span data-i18n="nav.sell">Sell Your Laptop</span></a>
+      <a href="trade-in.html" class="active"><span data-i18n="nav.sell">Laptop Finder</span></a>
     </nav>
     <div class="header-search">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -73,58 +75,88 @@
 
 <div class="page-head">
   <div class="container">
-    <div class="breadcrumb"><a href="index.html"><span data-i18n="nav.home">Home</span></a> / <span data-i18n="nav.sell">Sell Your Laptop</span></div>
-    <h1 data-i18n="nav.sell">Sell Your Laptop</h1>
+    <div class="breadcrumb"><a href="index.html"><span data-i18n="nav.home">Home</span></a> / <span data-i18n="finder.title">Laptop Finder</span></div>
+    <h1 data-i18n="finder.title">Find My Laptop</h1>
   </div>
 </div>
 
 <div class="container section">
-  <p style="color:var(--text-dim); max-width:640px; margin-bottom:var(--sp-5); line-height:1.7;" data-i18n="tradein.intro">
-    Have a laptop you're looking to sell or trade in? Fill in what you know about it below — even a rough idea is fine — and we'll send you a fair offer on WhatsApp, usually within the hour during working times.
+  <p style="color:var(--text-dim); max-width:640px; margin-bottom:var(--sp-6); line-height:1.7;" data-i18n="finder.intro">
+    Answer a few quick questions and we'll suggest the laptops that actually fit what you need — no guesswork.
   </p>
 
-  <form class="trade-form" id="tradeInForm">
-    <div class="field">
-      <label for="tiBrand" data-i18n="tradein.brand">Brand</label>
-      <input type="text" id="tiBrand" placeholder="e.g. Dell, HP, Lenovo" required>
+  <div class="finder-wrap" id="finderWrap">
+
+    <!-- progress -->
+    <div class="finder-progress">
+      <div class="finder-progress-bar"><div class="finder-progress-fill" id="finderProgressFill"></div></div>
+      <span class="finder-progress-label" id="finderProgressLabel">Step 1 of 4</span>
     </div>
-    <div class="field">
-      <label for="tiModel" data-i18n="tradein.model">Model</label>
-      <input type="text" id="tiModel" placeholder="e.g. Latitude 5420" required>
+
+    <!-- Step 1: usage -->
+    <div class="finder-step active" data-step="1">
+      <h2 data-i18n="finder.q1.title">What will you mainly use it for?</h2>
+      <div class="finder-options" data-question="usage">
+        <button type="button" data-value="office"><span data-i18n="finder.usage.office">Everyday Use & Browsing</span></button>
+        <button type="button" data-value="study"><span data-i18n="finder.usage.study">Studying</span></button>
+        <button type="button" data-value="programming"><span data-i18n="finder.usage.programming">Programming & Dev Work</span></button>
+        <button type="button" data-value="gaming"><span data-i18n="finder.usage.gaming">Gaming</span></button>
+        <button type="button" data-value="creative"><span data-i18n="finder.usage.creative">Photo & Video Editing</span></button>
+        <button type="button" data-value="heavy"><span data-i18n="finder.usage.heavy">Heavy Multitasking & Pro Work</span></button>
+      </div>
     </div>
-    <div class="field">
-      <label for="tiProcessor" data-i18n="tradein.processor">Processor</label>
-      <input type="text" id="tiProcessor" placeholder="e.g. Core i5 11th Gen">
+
+    <!-- Step 2: budget -->
+    <div class="finder-step" data-step="2">
+      <h2 data-i18n="finder.q2.title">What's your budget?</h2>
+      <div class="finder-options" data-question="budget">
+        <button type="button" data-value="b1"><span data-i18n="finder.budget.b1">Under 15,000 EGP</span></button>
+        <button type="button" data-value="b2"><span data-i18n="finder.budget.b2">15,000 – 25,000 EGP</span></button>
+        <button type="button" data-value="b3"><span data-i18n="finder.budget.b3">25,000 – 40,000 EGP</span></button>
+        <button type="button" data-value="b4"><span data-i18n="finder.budget.b4">40,000+ EGP</span></button>
+        <button type="button" data-value="any"><span data-i18n="finder.budget.any">No preference</span></button>
+      </div>
     </div>
-    <div class="field">
-      <label for="tiRam" data-i18n="tradein.ram">RAM</label>
-      <input type="text" id="tiRam" placeholder="e.g. 8GB">
+
+    <!-- Step 3: condition -->
+    <div class="finder-step" data-step="3">
+      <h2 data-i18n="finder.q3.title">New or used?</h2>
+      <div class="finder-options" data-question="condition">
+        <button type="button" data-value="new"><span data-i18n="finder.condition.new">New only</span></button>
+        <button type="button" data-value="used"><span data-i18n="finder.condition.used">Used only</span></button>
+        <button type="button" data-value="any"><span data-i18n="finder.condition.any">No preference</span></button>
+      </div>
     </div>
-    <div class="field">
-      <label for="tiStorage" data-i18n="tradein.storage">Storage</label>
-      <input type="text" id="tiStorage" placeholder="e.g. 256GB SSD">
+
+    <!-- Step 4: screen size -->
+    <div class="finder-step" data-step="4">
+      <h2 data-i18n="finder.q4.title">Any screen size preference?</h2>
+      <div class="finder-options" data-question="screen">
+        <button type="button" data-value="small"><span data-i18n="finder.screen.small">Compact & portable (13–14")</span></button>
+        <button type="button" data-value="medium"><span data-i18n="finder.screen.medium">Standard (15–16")</span></button>
+        <button type="button" data-value="large"><span data-i18n="finder.screen.large">Large (17"+)</span></button>
+        <button type="button" data-value="any"><span data-i18n="finder.screen.any">No preference</span></button>
+      </div>
     </div>
-    <div class="field">
-      <label for="tiCondition" data-i18n="tradein.condition">Condition</label>
-      <select id="tiCondition">
-        <option value="Excellent" data-i18n="tradein.condExcellent">Excellent — like new</option>
-        <option value="Good" data-i18n="tradein.condGood">Good — light everyday wear</option>
-        <option value="Fair" data-i18n="tradein.condFair">Fair — noticeable wear, fully working</option>
-        <option value="Needs repair" data-i18n="tradein.condRepair">Needs repair / has an issue</option>
-      </select>
+
+    <div class="finder-nav">
+      <button type="button" class="btn btn-ghost" id="finderBackBtn" data-i18n="finder.back" style="visibility:hidden;">Back</button>
+      <button type="button" class="btn btn-primary" id="finderNextBtn" data-i18n="finder.next">Next</button>
     </div>
-    <div class="field full">
-      <label for="tiPrice" data-i18n="tradein.price">Your Expected Price (optional)</label>
-      <input type="text" id="tiPrice" placeholder="e.g. 8,000 EGP">
+
+    <!-- Results -->
+    <div class="finder-results" id="finderResults" style="display:none;">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow" data-i18n="finder.resultsTitle">Your Best Matches</span>
+          <h2 data-i18n="finder.resultsTitle">Your Best Matches</h2>
+          <p style="color:var(--text-dim); margin-top:4px;" data-i18n="finder.resultsSubtitle">Based on your answers, here's what we'd recommend.</p>
+        </div>
+      </div>
+      <div class="product-grid" id="finderResultsGrid"></div>
+      <button type="button" class="btn btn-ghost" id="finderRestartBtn" style="margin-top:var(--sp-5);" data-i18n="finder.startOver">Start Over</button>
     </div>
-    <div class="field full">
-      <label for="tiNotes" data-i18n="tradein.notes">Anything else we should know? (optional)</label>
-      <textarea id="tiNotes" placeholder="Battery health, any damage, accessories included, etc." data-i18n-placeholder="tradein.notesPlaceholder"></textarea>
-    </div>
-    <div class="submit-row">
-      <button type="submit" class="btn btn-primary" data-i18n="tradein.submit">Send via WhatsApp</button>
-    </div>
-  </form>
+  </div>
 </div>
 
 <!-- ============ FOOTER ============ -->
@@ -150,7 +182,7 @@
           <li><a href="products.html"><span data-i18n="nav.allLaptops">All Laptops</span></a></li>
           <li><a href="products.html?condition=used" data-i18n="footer.usedLaptops">Used Laptops</a></li>
           <li><a href="compare.html"><span data-i18n="nav.compare">Compare</span></a></li>
-          <li><a href="trade-in.html"><span data-i18n="nav.sell">Sell Your Laptop</span></a></li>
+          <li><a href="trade-in.html"><span data-i18n="nav.sell">Laptop Finder</span></a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -179,8 +211,13 @@
 
 <script src="js/data/site-info.js"></script>
 <script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/data/supabase-config.js"></script>
+<script src="js/services/products-service.js"></script>
 <script src="js/components/compare-store.js"></script>
 <script src="js/components/favorites-store.js"></script>
+<script src="js/components/render-products.js"></script>
 <script src="js/components/shared-ui.js"></script>
 <script src="js/trade-in-page.js"></script>
 </body>

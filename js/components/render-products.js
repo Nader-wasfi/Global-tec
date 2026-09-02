@@ -14,6 +14,9 @@ function productCardHTML(p){
   const specs = [p.processor, p.ram, p.storage].filter(Boolean)
     .map(s => `<span>${escapeHTML(shortSpec(s))}</span>`).join("");
 
+  const bestForKey = typeof primaryUseCase === "function" ? primaryUseCase(p) : null;
+  const bestForBadge = bestForKey ? `<span class="badge-best-for">${USE_CASES[bestForKey].label}</span>` : "";
+
   return `
   <div class="product-card" data-id="${p.id}">
     <a href="product-details.html?id=${p.id}" class="card-media">
@@ -33,6 +36,7 @@ function productCardHTML(p){
       <span class="card-brand">${escapeHTML(p.brand)}</span>
       <a href="product-details.html?id=${p.id}" class="card-name">${escapeHTML(p.name)}</a>
       ${renderStars(p.rating, p.rating_count)}
+      ${bestForBadge}
       <div class="card-specs">${specs}</div>
       <div class="card-stock ${p.in_stock ? '' : 'out'}"><span class="dot"></span>${p.in_stock ? tr('stock.in') : tr('stock.out')}</div>
       <div class="card-footer">

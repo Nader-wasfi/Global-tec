@@ -35,7 +35,7 @@
   display:flex; justify-content:space-between; align-items:center;
   font-family:var(--font-mono);
   font-size:11px; text-transform:uppercase; letter-spacing:0.08em;
-  color:var(--text-faint);
+  color:var(--price);
   margin-bottom:var(--sp-2);
 }
 .reset-link{color:var(--accent); text-transform:none; letter-spacing:0; cursor:pointer; font-size:11px;}

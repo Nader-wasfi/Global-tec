@@ -38,6 +38,18 @@
   color:var(--price);
   margin-bottom:var(--sp-2);
 }
+.filter-title-label{
+  display:flex; align-items:center; gap:6px;
+  cursor:pointer; user-select:none;
+  flex:1;
+}
+.filter-arrow{
+  flex-shrink:0;
+  transition:transform .18s ease;
+  transform:rotate(0deg);
+}
+.filter-group.is-collapsed .filter-arrow{transform:rotate(-90deg);}
+.filter-group.is-collapsed .filter-content{display:none;}
 .reset-link{color:var(--accent); text-transform:none; letter-spacing:0; cursor:pointer; font-size:11px;}
 .filter-option{
   display:flex; align-items:center; gap:8px;

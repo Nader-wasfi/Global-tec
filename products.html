@@ -93,82 +93,153 @@
         <button type="button" class="reset-link" id="clearAllFilters" data-i18n="products.clearAll">Clear All Filters</button>
       </div>
 
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.category">Category</div>
-        <label class="filter-option"><input type="checkbox" name="category" value="laptop" /> <span data-i18n="nav.allLaptops">All Laptops</span></label>
-        <label class="filter-option"><input type="checkbox" name="category" value="accessory" /> <span data-i18n="nav.accessories">Accessories</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title"><span data-i18n="products.brand">Brand</span> <span class="reset-link" id="resetBrand" data-i18n="products.clear">Clear</span></div>
-        <div id="brandFilterList">
-          <!-- populated dynamically -->
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.category">Category</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <label class="filter-option"><input type="checkbox" name="category" value="laptop" /> <span data-i18n="nav.allLaptops">All Laptops</span></label>
+          <label class="filter-option"><input type="checkbox" name="category" value="accessory" /> <span data-i18n="nav.accessories">Accessories</span></label>
         </div>
       </div>
 
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.bestFor">Best For</div>
-        <label class="filter-option"><input type="checkbox" name="useCase" value="office" /> <span data-i18n="finder.usage.office">Everyday Use & Browsing</span></label>
-        <label class="filter-option"><input type="checkbox" name="useCase" value="study" /> <span data-i18n="finder.usage.study">Studying</span></label>
-        <label class="filter-option"><input type="checkbox" name="useCase" value="programming" /> <span data-i18n="finder.usage.programming">Programming & Dev Work</span></label>
-        <label class="filter-option"><input type="checkbox" name="useCase" value="gaming" /> <span data-i18n="finder.usage.gaming">Gaming</span></label>
-        <label class="filter-option"><input type="checkbox" name="useCase" value="creative" /> <span data-i18n="finder.usage.creative">Photo & Video Editing</span></label>
-        <label class="filter-option"><input type="checkbox" name="useCase" value="heavy" /> <span data-i18n="finder.usage.heavy">Heavy Multitasking & Pro Work</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.condition">Condition</div>
-        <label class="filter-option"><input type="checkbox" name="condition" value="new" /> <span data-i18n="products.new">New</span></label>
-        <label class="filter-option"><input type="checkbox" name="condition" value="used" /> <span data-i18n="nav.used">Used</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.ram">RAM</div>
-        <label class="filter-option"><input type="checkbox" name="ram" value="8GB" /> <span>8GB</span></label>
-        <label class="filter-option"><input type="checkbox" name="ram" value="16GB" /> <span>16GB</span></label>
-        <label class="filter-option"><input type="checkbox" name="ram" value="32GB" /> <span>32GB</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.storage">Storage</div>
-        <label class="filter-option"><input type="checkbox" name="storage" value="256GB" /> <span>256GB</span></label>
-        <label class="filter-option"><input type="checkbox" name="storage" value="512GB" /> <span>512GB</span></label>
-        <label class="filter-option"><input type="checkbox" name="storage" value="1TB" /> <span>1TB</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.screenSize">Screen Size</div>
-        <div id="screenSizeFilterList">
-          <!-- populated dynamically from what's actually in the catalog -->
+      <div class="filter-group" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="true">
+            <span data-i18n="products.brand">Brand</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="reset-link" id="resetBrand" data-i18n="products.clear">Clear</span>
         </div>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.availability">Availability</div>
-        <label class="filter-option"><input type="checkbox" name="stock" value="in" /> <span data-i18n="products.inStock">In Stock</span></label>
-        <label class="filter-option"><input type="checkbox" name="stock" value="out" /> <span data-i18n="products.outStock">Out of Stock</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.display">Display</div>
-        <label class="filter-option"><input type="checkbox" id="touchFilter" /> <span data-i18n="products.touchScreen">Touch Screen</span></label>
-      </div>
-
-      <div class="filter-group">
-        <div class="filter-title" data-i18n="products.price">Price (EGP)</div>
-        <div class="price-slider" id="priceSlider">
-          <div class="price-slider-track">
-            <div class="price-slider-range" id="priceSliderRange"></div>
+        <div class="filter-content">
+          <div id="brandFilterList">
+            <!-- populated dynamically -->
           </div>
-          <input type="range" id="priceRangeMin" class="price-range-thumb">
-          <input type="range" id="priceRangeMax" class="price-range-thumb">
         </div>
-        <div class="price-slider-values">
-          <span id="priceMinLabel">—</span>
-          <span id="priceMaxLabel">—</span>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.bestFor">Best For</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
         </div>
-        <input type="hidden" id="minPrice">
-        <input type="hidden" id="maxPrice">
+        <div class="filter-content">
+          <label class="filter-option"><input type="checkbox" name="useCase" value="office" /> <span data-i18n="finder.usage.office">Everyday Use & Browsing</span></label>
+          <label class="filter-option"><input type="checkbox" name="useCase" value="study" /> <span data-i18n="finder.usage.study">Studying</span></label>
+          <label class="filter-option"><input type="checkbox" name="useCase" value="programming" /> <span data-i18n="finder.usage.programming">Programming & Dev Work</span></label>
+          <label class="filter-option"><input type="checkbox" name="useCase" value="gaming" /> <span data-i18n="finder.usage.gaming">Gaming</span></label>
+          <label class="filter-option"><input type="checkbox" name="useCase" value="creative" /> <span data-i18n="finder.usage.creative">Photo & Video Editing</span></label>
+          <label class="filter-option"><input type="checkbox" name="useCase" value="heavy" /> <span data-i18n="finder.usage.heavy">Heavy Multitasking & Pro Work</span></label>
+        </div>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.condition">Condition</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <label class="filter-option"><input type="checkbox" name="condition" value="new" /> <span data-i18n="products.new">New</span></label>
+          <label class="filter-option"><input type="checkbox" name="condition" value="used" /> <span data-i18n="nav.used">Used</span></label>
+        </div>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.ram">RAM</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <label class="filter-option"><input type="checkbox" name="ram" value="8GB" /> <span>8GB</span></label>
+          <label class="filter-option"><input type="checkbox" name="ram" value="16GB" /> <span>16GB</span></label>
+          <label class="filter-option"><input type="checkbox" name="ram" value="32GB" /> <span>32GB</span></label>
+        </div>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.storage">Storage</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <label class="filter-option"><input type="checkbox" name="storage" value="256GB" /> <span>256GB</span></label>
+          <label class="filter-option"><input type="checkbox" name="storage" value="512GB" /> <span>512GB</span></label>
+          <label class="filter-option"><input type="checkbox" name="storage" value="1TB" /> <span>1TB</span></label>
+        </div>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.screenSize">Screen Size</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <div id="screenSizeFilterList">
+            <!-- populated dynamically from what's actually in the catalog -->
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.availability">Availability</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <label class="filter-option"><input type="checkbox" name="stock" value="in" /> <span data-i18n="products.inStock">In Stock</span></label>
+          <label class="filter-option"><input type="checkbox" name="stock" value="out" /> <span data-i18n="products.outStock">Out of Stock</span></label>
+        </div>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.display">Display</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <label class="filter-option"><input type="checkbox" id="touchFilter" /> <span data-i18n="products.touchScreen">Touch Screen</span></label>
+        </div>
+      </div>
+
+      <div class="filter-group is-collapsed" data-filter-group>
+        <div class="filter-title">
+          <span class="filter-title-label" data-filter-toggle tabindex="0" role="button" aria-expanded="false">
+            <span data-i18n="products.price">Price (EGP)</span>
+            <svg class="filter-arrow" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="filter-content">
+          <div class="price-slider" id="priceSlider">
+            <div class="price-slider-track">
+              <div class="price-slider-range" id="priceSliderRange"></div>
+            </div>
+            <input type="range" id="priceRangeMin" class="price-range-thumb">
+            <input type="range" id="priceRangeMax" class="price-range-thumb">
+          </div>
+          <div class="price-slider-values">
+            <span id="priceMinLabel">—</span>
+            <span id="priceMaxLabel">—</span>
+          </div>
+          <input type="hidden" id="minPrice">
+          <input type="hidden" id="maxPrice">
+        </div>
       </div>
 
       <button class="btn btn-primary btn-sm" id="applyFilters" style="width:100%; margin-top:var(--sp-2);" data-i18n="products.applyFilters">Apply Filters</button>

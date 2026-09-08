@@ -33,6 +33,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       <input type="checkbox" name="brand" value="${b.brand}" ${state.brand.includes(b.brand) ? "checked" : ""}>
       ${b.brand} <span class="fcount">${b.count}</span>
     </label>`).join("");
+  // brand checkboxes react instantly, same as the other filters
+  brandListEl.addEventListener("change", (e) => {
+    if (e.target.matches('input[name="brand"]')) runQuery();
+  });
 
   // build screen size filter list from whatever sizes actually exist in the catalog
   const allProductsForSizes = await ProductsService.getAll();
@@ -243,6 +247,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll('input[name="useCase"]').forEach(cb => cb.addEventListener("change", runQuery));
   // touch filter reacts instantly
   document.getElementById("touchFilter").addEventListener("change", runQuery);
+
+  // collapsible filter groups — arrow toggles the group open/closed
+  document.querySelectorAll('[data-filter-toggle]').forEach(toggle => {
+    const group = toggle.closest('[data-filter-group]');
+    const setExpanded = (expanded) => {
+      group.classList.toggle("is-collapsed", !expanded);
+      toggle.setAttribute("aria-expanded", String(expanded));
+    };
+    toggle.addEventListener("click", () => {
+      setExpanded(group.classList.contains("is-collapsed"));
+    });
+    toggle.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        setExpanded(group.classList.contains("is-collapsed"));
+      }
+    });
+  });
 
   // mobile filter drawer
   const panel = document.getElementById("filtersPanel");

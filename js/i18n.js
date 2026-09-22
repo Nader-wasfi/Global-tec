@@ -23,6 +23,9 @@ const I18N = {
     "header.compare": "Compare",
     "header.favorites": "Favorites",
     "header.call": "Call Us",
+    "header.share": "Share this page",
+    "share.copied": "Link copied!",
+    "share.copyManually": "Copy this link:",
     "header.lang": "العربية",
 
     "category.all": "All Laptops",

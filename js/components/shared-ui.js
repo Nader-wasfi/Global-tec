@@ -13,6 +13,12 @@ function initSharedUI(){
     navToggle.addEventListener("click", () => mainNav.classList.toggle("open"));
   }
 
+  // header share button — shares/copies the current page's link
+  const shareBtn = document.getElementById("headerShareBtn");
+  if (shareBtn){
+    shareBtn.addEventListener("click", () => sharePage());
+  }
+
   // compare badge count, kept live across tabs/pages
   const updateBadge = () => {
     const el = document.getElementById("compareCount");

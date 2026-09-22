@@ -128,6 +128,11 @@ function renderProductDetails(p){
     };
   }
 
+  const shareBtn = document.getElementById("productShareBtn");
+  if (shareBtn){
+    shareBtn.onclick = () => sharePage(p.name, window.location.href, `Check out this laptop: ${p.name} — ${formatEGP(p.price)}`);
+  }
+
   const contactBtn = document.getElementById("contactBtn");
   const specsLine = [p.processor, p.ram, p.storage].filter(Boolean).join(" / ");
   const orderMsg = encodeURIComponent(

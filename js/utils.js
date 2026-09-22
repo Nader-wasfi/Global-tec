@@ -145,3 +145,45 @@ function showSkeletonGrid(containerId, count){
       </div>
     </div>`).join("");
 }
+
+/* ==========================================================================
+   SHARE — copies (or native-shares) a page link, so the shop owner can
+   quickly send a product page to a customer on WhatsApp etc.
+   Uses the phone's native Share sheet when available; falls back to
+   copying the link to the clipboard with a small confirmation toast.
+   ========================================================================== */
+
+async function sharePage(title, url, text){
+  url = url || window.location.href;
+  title = title || document.title;
+
+  if (navigator.share){
+    try {
+      await navigator.share({ title, text, url });
+    } catch (e){
+      // person cancelled the native share sheet — not an error, do nothing
+    }
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(url);
+    showShareToast(t ? t("share.copied") : "Link copied!");
+  } catch (e){
+    window.prompt(t ? t("share.copyManually") : "Copy this link:", url);
+  }
+}
+
+function showShareToast(message){
+  let toast = document.getElementById("shareToast");
+  if (!toast){
+    toast = document.createElement("div");
+    toast.id = "shareToast";
+    toast.className = "share-toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(showShareToast._timer);
+  showShareToast._timer = setTimeout(() => toast.classList.remove("show"), 2200);
+}

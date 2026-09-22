@@ -115,7 +115,7 @@
   padding:4px 18px;
   display:flex; align-items:center;
 }
-.category-chip.has-logo img{height:34px; width: auto;; display:list-item;}
+.category-chip.has-logo img{height:34px; width:auto; display:block;}
 
 @media (max-width: 900px){
   .hero-slide{height:260px;}
